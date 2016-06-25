@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>M3U8-Converter</title>
+    <meta name='description' content='UEFA Euro 2016 live-streams - Watch all matches online in full-length and HD.'>
+    <meta name='viewport' content='height=device-height, initial-scale=1.0'>
+    <meta name='mobile-web-app-capable' content='yes'>
+    <meta name='application-name' content=''>
+    <meta name='theme-color' content='#000000'>
+    <meta name='apple-mobile-web-app-capable' content='yes'>
+    <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent'>
+    <meta name='apple-mobile-web-app-title' content=''>
+
+    <link rel='shortcut icon' href='./static/img/castIcon_128.png'>
+    <link rel='icon' href='./static/img/castIcon_128.png' type='image/x-icon'>
+</head>
+<body>
+    <form action="#" method="post" name="form1">
+        <table style="width: 100%; border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 350px;">
+                        <input type="radio" name="list" checked="checked" value='1' onchange='document.getElementById("ex_title").innerHTML="<b>Original Liste:</b>:"; document.getElementById("example1").innerHTML="";'/>
+                        <a class="addspeech" rel="#speechbubble1">
+                            <b>Mit Kanalnamen</b>
+                        </a>
+                        <input type="radio" name="list" value='2' onchange='document.getElementById("ex_title").innerHTML="<b>Original Liste:</b>:"; document.getElementById("example1").innerHTML="";'/>
+                        <a class="addspeech" rel="#speechbubble2">
+                            <b>Ohne Kanalnamen</b>
+                        </a>
+                        <br/><br>
+                        <span id="ex_title">
+                            <b>Originalliste:</b>
+                        </span>
+                        <div id="example1" style="display:none; font-size:11px; color:#000; border: dashed 1px #CCC; width:300px; margin-top:20px; margin-bottom:20px; padding:4px;"></div>
+                        <textarea id="input" style="width:100%; height:400px;"></textarea><br>
+                        *Oben auf der Liste kein <span style="color:#FF0000"><b>#EXTM3U</b></span> verwenden*
+                    </td>
+                    <td style="width: 20px; text-align: left; padding-left: 10px;"><br><br><br><br>
+                        <input type="radio" name="format" value='1' onchange='document.getElementById("submit").value="Kaydet .m3u";'/>
+                        <b>.m3u</b><br/>
+                        <input type="radio" name="format" checked="checked" value='2' onchange='document.getElementById("submit").value="Kaydet  MKVOD";'/>
+                        <b>MK VOD</b><br/>
+                        <input type="radio" name="format" value='3' onchange='document.getElementById("submit").value="Kaydet  OpenBox";'/>
+                        <b>OpenBox</b><br/>
+                        <input type="radio" name="format" value='4' onchange='document.getElementById("submit").value="Kaydet  Еnigma2";'/>
+                        <b>Enigma2</b><br/>
+                        <input type="radio" name="format" value='5' onchange='document.getElementById("submit").value="Kaydet  LG";'/>
+                        <b>MK IPTV</b><br/>
+                        <input type="radio" name="format" value='6' onchange='document.getElementById("submit").value="Kaydet  .wpl";'/>
+                        <b>WMPlayer</b><br/>
+                        <input type="radio" name="format" value='7' onchange='document.getElementById("submit").value="Kaydet  .mpcpl";'/>
+                        <b>MPClassic</b><br/>
+                        <br/>
+                        <div align="center">
+                            <input type="button" name="convert" class="codeButtons234" value="übersetzen" onClick="javascript: kinozalposle()"/>
+                            <br/><input type="reset" class="codeButtons234" value="clear"/><br>
+                            <input type="button" class="codeButtons234" value="Alles auswählen" onClick="SelecText(output)">
+                        </div><br/>
+                        <b>Kategorien:</b>
+                        <input type="number" id="kategori" name="kategori" maxlength="2" value="1" style="width:40px"></input>
+                    </td>
+                    <td style="width: 350px;"><br/><br/>
+                        <b>Übersetzte Liste</b><br/>
+                        <textarea id="output" name="output" style="width:100%; height:400px;" disabled="disabled"></textarea>
+                        <!--<input type="submit" id="submit" class="codeButtons234" value="Sparen  .m3u"/>-->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    <script>
+        function kinozalposle() {
+            document.getElementById("output").disabled = false;
+            var inp = document.getElementById("input").value;
+            //inp = inp.replace(/#EXTM3U/,''); alert(inp);
+            inp = inp.replace(/\n+$/m, '');
+            inp = inp.split(/[\r\n]+/);
+            var out = "";
+            if (document.form1.list[0].checked) {
+                if (document.form1.format[0].checked) {
+                    if (document.getElementById("input").value != "") {
+                        var c = 0;
+                        for (i = 0; i < inp.length; i++) {
+                            if (c == 1) {
+                                c = 0;
+                                out = out + inp[i] + "\n";
+                            } else {
+                                c = 1;
+                                out = out + '#EXTINF:0,' + inp[i] + "\n";
+                                out = out.replace("#EXTINF:0, #EXTINF:0,", "#EXTINF:0,");
+                            }
+                        }
+                        document.getElementById("output").value = '#EXTM3U' + "\n" + out;
+                    } else {
+                        alert('Посетите форум КиноЗала POSLE и введите выбраный Вами плейлист в первое окно!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                if (document.form1.format[1].checked) {
+                    if (document.getElementById("input").value != "") {
+                        var c = 0;
+                        for (i = 0; i < inp.length; i++) {
+                            if (c == 1) {
+                                c = 0;
+                                out = out + "\t" + '<stream_url><![CDATA[' + inp[i] + ']]></stream_url>' + "\n" + '</channel>' + "\n";
+                            } else {
+                                c = 1;
+                                out = out + '<channel>' + "\n" + "\t" + '<title><![CDATA[' + inp[i] + ']]></title>' + "\n" + "\t" + '<logo_30x30><![CDATA[' + ']]></logo_30x30>' + "\n" + "\t" + '<description><![CDATA[<img src="" height="354" width="354"/><br>UserAppStore<br>www.ullrich.es]]></description>' + "\n";
+                                out = out.replace(/#EXTINF:| #EXTINF:|[0-9],|-[1-9],|,/g, '');
+                                out = out.replace(" http", "http");
+                                out = out.replace(" ]]>", "]]>");
+                                out = out.replace(" </title>", "</title>");
+                            }
+                        }
+                        document.getElementById("output").value = '<?xml version="1.0" encoding="UTF-8"?>' + "\n" + '<items>' + "\n" + out + '</items>' + "\n";
+                    } else {
+                        alert('Liste boş..!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                if (document.form1.format[2].checked) {
+                    if (document.getElementById("input").value != "") {
+                        var c = 0;
+                        for (i = 0; i < inp.length; i++) {
+                            if (c == 1) {
+                                c = 0;
+                                out = out + '[URL]' + inp[i] + "\n" + '[DESCRIPTION]<br>UserAppStore<br>www.ullrich.es' + "\n";
+                            } else {
+                                c = 1;
+                                out = out + "\n" + '[TITLE]' + inp[i] + "\n";
+                                out = out.replace(/#EXTINF:| #EXTINF:|[0-9],|-[1-9],|,/g, '');
+                                out = out.replace(" http", "http");
+                            }
+                        }
+                        document.getElementById("output").value = out;
+                    } else {
+                        alert('Посетите форум КиноЗала POSLE и введите выбраный Вами плейлист в первое окно!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                if (document.form1.format[3].checked) {
+                    if (document.getElementById("input").value != "") {
+                        var out2 = "";
+                        var c = 1;
+                        var co = 1;
+                        for (i = 0; i < inp.length; i++) {
+                            if (c == 1) {
+                                c = 0;
+                                out2 = ':' + inp[i] + "\n" + '#DESCRIPTION=' + inp[i];
+                            } else {
+                                c = 1;
+                                out = out + '#SERVICE 4097:0:1:' + co + ':0:0:0:0:0:0:' + inp[i] + out2 + "\n";
+                                co++;
+                                out = out.replace(/#EXTINF:| #EXTINF:|[0-9],|-[0-9],/g, '');
+                                out = out.replace(" http", "http");
+                                out = out.replace("   :", ":");
+                                out = out.replace(" :", ":");
+                                out = out.replace("p:/", "p%3a/");
+                                out = out.replace(".1:", ".1%3a");
+                                out = out.replace(".2:", ".2%3a");
+                                out = out.replace(".3:", ".3%3a");
+                                out = out.replace(".4:", ".4%3a");
+                                out = out.replace(".5:", ".5%3a");
+                                out = out.replace(".6:", ".6%3a");
+                                out = out.replace(".7:", ".7%3a");
+                                out = out.replace(".8:", ".8%3a");
+                                out = out.replace(".9:", ".9%3a");
+                                out = out.replace(".10:", ".10%3a");
+                                out = out.replace(".11:", ".11%3a");
+                                out = out.replace(".12:", ".12%3a");
+                                out = out.replace(".13:", ".13%3a");
+                                out = out.replace(".14:", ".14%3a");
+                                out = out.replace(".15:", ".15%3a");
+                                out = out.replace(".16:", ".16%3a");
+                                out = out.replace(".17:", ".17%3a");
+                                out = out.replace(".18:", ".18%3a");
+                                out = out.replace(".19:", ".19%3a");
+                                out = out.replace(".20:", ".20%3a");
+                                out = out.replace(".21:", ".21%3a");
+                                out = out.replace(".22:", ".22%3a");
+                                out = out.replace(".23:", ".23%3a");
+                                out = out.replace(".24:", ".24%3a");
+                                out = out.replace(".25:", ".25%3a");
+                                out = out.replace(".26:", ".26%3a");
+                                out = out.replace(".27:", ".27%3a");
+                                out = out.replace(".28:", ".28%3a");
+                                out = out.replace(".29:", ".29%3a");
+                                out = out.replace(".30:", ".30%3a");
+                                out = out.replace(".31:", ".31%3a");
+                                out = out.replace(".32:", ".32%3a");
+                                out = out.replace(".33:", ".33%3a");
+                                out = out.replace(".34:", ".34%3a");
+                                out = out.replace(".35:", ".35%3a");
+                                out = out.replace(".36:", ".36%3a");
+                                out = out.replace(".37:", ".37%3a");
+                                out = out.replace(".38:", ".38%3a");
+                                out = out.replace(".39:", ".39%3a");
+                                out = out.replace(".40:", ".40%3a");
+                                out = out.replace(".41:", ".41%3a");
+                                out = out.replace(".42:", ".42%3a");
+                                out = out.replace(".43:", ".43%3a");
+                                out = out.replace(".44:", ".44%3a");
+                                out = out.replace(".45:", ".45%3a");
+                                out = out.replace(".46:", ".46%3a");
+                                out = out.replace(".47:", ".47%3a");
+                                out = out.replace(".48:", ".48%3a");
+                                out = out.replace(".49:", ".49%3a");
+                                out = out.replace(".50:", ".50%3a");
+                                out = out.replace(".51:", ".51%3a");
+                                out = out.replace(".52:", ".52%3a");
+                                out = out.replace(".53:", ".53%3a");
+                                out = out.replace(".54:", ".54%3a");
+                                out = out.replace(".55:", ".55%3a");
+                                out = out.replace(".56:", ".56%3a");
+                                out = out.replace(".57:", ".57%3a");
+                                out = out.replace(".58:", ".58%3a");
+                                out = out.replace(".59:", ".59%3a");
+                                out = out.replace(".60:", ".60%3a");
+                                out = out.replace(".61:", ".61%3a");
+                                out = out.replace(".62:", ".62%3a");
+                                out = out.replace(".63:", ".63%3a");
+                                out = out.replace(".64:", ".64%3a");
+                                out = out.replace(".65:", ".65%3a");
+                                out = out.replace(".66:", ".66%3a");
+                                out = out.replace(".67:", ".67%3a");
+                                out = out.replace(".68:", ".68%3a");
+                                out = out.replace(".69:", ".69%3a");
+                                out = out.replace(".70:", ".70%3a");
+                                out = out.replace(".71:", ".71%3a");
+                                out = out.replace(".72:", ".72%3a");
+                                out = out.replace(".73:", ".73%3a");
+                                out = out.replace(".74:", ".74%3a");
+                                out = out.replace(".75:", ".75%3a");
+                                out = out.replace(".76:", ".76%3a");
+                                out = out.replace(".77:", ".77%3a");
+                                out = out.replace(".78:", ".78%3a");
+                                out = out.replace(".79:", ".79%3a");
+                                out = out.replace(".80:", ".80%3a");
+                                out = out.replace(".81:", ".81%3a");
+                                out = out.replace(".82:", ".82%3a");
+                                out = out.replace(".83:", ".83%3a");
+                                out = out.replace(".84:", ".84%3a");
+                                out = out.replace(".85:", ".85%3a");
+                                out = out.replace(".86:", ".86%3a");
+                                out = out.replace(".87:", ".87%3a");
+                                out = out.replace(".88:", ".88%3a");
+                                out = out.replace(".89:", ".89%3a");
+                                out = out.replace(".90:", ".90%3a");
+                                out = out.replace(".91:", ".91%3a");
+                                out = out.replace(".92:", ".92%3a");
+                                out = out.replace(".93:", ".93%3a");
+                                out = out.replace(".94:", ".94%3a");
+                                out = out.replace(".95:", ".95%3a");
+                                out = out.replace(".96:", ".96%3a");
+                                out = out.replace(".97:", ".97%3a");
+                                out = out.replace(".98:", ".98%3a");
+                                out = out.replace(".99:", ".99%3a");
+                                out = out.replace(".100:", ".100%3a");
+                                out = out.replace(".101:", ".101%3a");
+                                out = out.replace(".102:", ".102%3a");
+                                out = out.replace(".103:", ".103%3a");
+                                out = out.replace(".104:", ".104%3a");
+                                out = out.replace(".105:", ".105%3a");
+                                out = out.replace(".106:", ".106%3a");
+                                out = out.replace(".107:", ".107%3a");
+                                out = out.replace(".108:", ".108%3a");
+                                out = out.replace(".109:", ".109%3a");
+                                out = out.replace(".110:", ".110%3a");
+                                out = out.replace(".111:", ".111%3a");
+                                out = out.replace(".112:", ".112%3a");
+                                out = out.replace(".113:", ".113%3a");
+                                out = out.replace(".114:", ".114%3a");
+                                out = out.replace(".115:", ".115%3a");
+                                out = out.replace(".116:", ".116%3a");
+                                out = out.replace(".117:", ".117%3a");
+                                out = out.replace(".118:", ".118%3a");
+                                out = out.replace(".119:", ".119%3a");
+                                out = out.replace(".120:", ".120%3a");
+                                out = out.replace(".121:", ".121%3a");
+                                out = out.replace(".122:", ".122%3a");
+                                out = out.replace(".123:", ".123%3a");
+                                out = out.replace(".124:", ".124%3a");
+                                out = out.replace(".125:", ".125%3a");
+                                out = out.replace(".126:", ".126%3a");
+                                out = out.replace(".127:", ".127%3a");
+                                out = out.replace(".128:", ".128%3a");
+                                out = out.replace(".129:", ".129%3a");
+                                out = out.replace(".130:", ".130%3a");
+                                out = out.replace(".131:", ".131%3a");
+                                out = out.replace(".132:", ".132%3a");
+                                out = out.replace(".133:", ".133%3a");
+                                out = out.replace(".134:", ".134%3a");
+                                out = out.replace(".135:", ".135%3a");
+                                out = out.replace(".136:", ".136%3a");
+                                out = out.replace(".137:", ".137%3a");
+                                out = out.replace(".138:", ".138%3a");
+                                out = out.replace(".139:", ".139%3a");
+                                out = out.replace(".140:", ".140%3a");
+                                out = out.replace(".141:", ".141%3a");
+                                out = out.replace(".142:", ".142%3a");
+                                out = out.replace(".143:", ".143%3a");
+                                out = out.replace(".144:", ".144%3a");
+                                out = out.replace(".145:", ".145%3a");
+                                out = out.replace(".146:", ".146%3a");
+                                out = out.replace(".147:", ".147%3a");
+                                out = out.replace(".148:", ".148%3a");
+                                out = out.replace(".149:", ".149%3a");
+                                out = out.replace(".150:", ".150%3a");
+                                out = out.replace(".151:", ".151%3a");
+                                out = out.replace(".152:", ".152%3a");
+                                out = out.replace(".153:", ".153%3a");
+                                out = out.replace(".154:", ".154%3a");
+                                out = out.replace(".155:", ".155%3a");
+                                out = out.replace(".156:", ".156%3a");
+                                out = out.replace(".157:", ".157%3a");
+                                out = out.replace(".158:", ".158%3a");
+                                out = out.replace(".159:", ".159%3a");
+                                out = out.replace(".160:", ".160%3a");
+                                out = out.replace(".161:", ".161%3a");
+                                out = out.replace(".162:", ".162%3a");
+                                out = out.replace(".163:", ".163%3a");
+                                out = out.replace(".164:", ".164%3a");
+                                out = out.replace(".165:", ".165%3a");
+                                out = out.replace(".166:", ".166%3a");
+                                out = out.replace(".167:", ".167%3a");
+                                out = out.replace(".168:", ".168%3a");
+                                out = out.replace(".169:", ".169%3a");
+                                out = out.replace(".170:", ".170%3a");
+                                out = out.replace(".171:", ".171%3a");
+                                out = out.replace(".172:", ".172%3a");
+                                out = out.replace(".173:", ".173%3a");
+                                out = out.replace(".174:", ".174%3a");
+                                out = out.replace(".175:", ".175%3a");
+                                out = out.replace(".176:", ".176%3a");
+                                out = out.replace(".177:", ".177%3a");
+                                out = out.replace(".178:", ".178%3a");
+                                out = out.replace(".179:", ".179%3a");
+                                out = out.replace(".180:", ".180%3a");
+                                out = out.replace(".181:", ".181%3a");
+                                out = out.replace(".182:", ".182%3a");
+                                out = out.replace(".183:", ".183%3a");
+                                out = out.replace(".184:", ".184%3a");
+                                out = out.replace(".185:", ".185%3a");
+                                out = out.replace(".186:", ".186%3a");
+                                out = out.replace(".187:", ".187%3a");
+                                out = out.replace(".188:", ".188%3a");
+                                out = out.replace(".189:", ".189%3a");
+                                out = out.replace(".190:", ".190%3a");
+                                out = out.replace(".191:", ".191%3a");
+                                out = out.replace(".192:", ".192%3a");
+                                out = out.replace(".193:", ".193%3a");
+                                out = out.replace(".194:", ".194%3a");
+                                out = out.replace(".195:", ".195%3a");
+                                out = out.replace(".196:", ".196%3a");
+                                out = out.replace(".197:", ".197%3a");
+                                out = out.replace(".198:", ".198%3a");
+                                out = out.replace(".199:", ".199%3a");
+                                out = out.replace(".200:", ".200%3a");
+                                out = out.replace(".201:", ".201%3a");
+                                out = out.replace(".202:", ".202%3a");
+                                out = out.replace(".203:", ".203%3a");
+                                out = out.replace(".204:", ".204%3a");
+                                out = out.replace(".205:", ".205%3a");
+                                out = out.replace(".206:", ".206%3a");
+                                out = out.replace(".207:", ".207%3a");
+                                out = out.replace(".208:", ".208%3a");
+                                out = out.replace(".209:", ".209%3a");
+                                out = out.replace(".210:", ".210%3a");
+                                out = out.replace(".211:", ".211%3a");
+                                out = out.replace(".212:", ".212%3a");
+                                out = out.replace(".213:", ".213%3a");
+                                out = out.replace(".214:", ".214%3a");
+                                out = out.replace(".215:", ".215%3a");
+                                out = out.replace(".216:", ".216%3a");
+                                out = out.replace(".217:", ".217%3a");
+                                out = out.replace(".218:", ".218%3a");
+                                out = out.replace(".219:", ".219%3a");
+                                out = out.replace(".220:", ".220%3a");
+                                out = out.replace(".221:", ".221%3a");
+                                out = out.replace(".222:", ".222%3a");
+                                out = out.replace(".223:", ".223%3a");
+                                out = out.replace(".224:", ".224%3a");
+                                out = out.replace(".225:", ".225%3a");
+                                out = out.replace(".226:", ".226%3a");
+                                out = out.replace(".227:", ".227%3a");
+                                out = out.replace(".228:", ".228%3a");
+                                out = out.replace(".229:", ".229%3a");
+                                out = out.replace(".230:", ".230%3a");
+                                out = out.replace(".231:", ".231%3a");
+                                out = out.replace(".232:", ".232%3a");
+                                out = out.replace(".233:", ".233%3a");
+                                out = out.replace(".234:", ".234%3a");
+                                out = out.replace(".235:", ".235%3a");
+                                out = out.replace(".236:", ".236%3a");
+                                out = out.replace(".237:", ".237%3a");
+                                out = out.replace(".238:", ".238%3a");
+                                out = out.replace(".239:", ".239%3a");
+                                out = out.replace(".240:", ".240%3a");
+                                out = out.replace(".241:", ".241%3a");
+                                out = out.replace(".242:", ".242%3a");
+                                out = out.replace(".243:", ".243%3a");
+                                out = out.replace(".244:", ".244%3a");
+                                out = out.replace(".245:", ".245%3a");
+                                out = out.replace(".246:", ".246%3a");
+                                out = out.replace(".247:", ".247%3a");
+                                out = out.replace(".248:", ".248%3a");
+                                out = out.replace(".249:", ".249%3a");
+                                out = out.replace(".250:", ".250%3a");
+                                out = out.replace(".251:", ".251%3a");
+                                out = out.replace(".252:", ".252%3a");
+                                out = out.replace(".253:", ".253%3a");
+                                out = out.replace(".254:", ".254%3a");
+                                out = out.replace(".255:", ".255%3a");
+                                out = out.replace("#DESCRIPTION=", "#DESCRIPTION ");
+                            }
+                        }
+                        var lenght2 = inp.length / 2;
+                        document.getElementById("output").value = '#NAME КиноЗал POSLE' + "\n" + out;
+                    } else {
+                        alert('Посетите форум КиноЗала POSLE и введите выбраный Вами плейлист в первое окно!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                if (document.form1.format[4].checked) {
+                    if (document.getElementById("input").value != "") {
+                        var kt = document.getElementById("kategori").value;
+                        //kt=parseint(kt);
+                        if (kt > 24) {
+                            alert("Kategori değeri 24 ten büyük olamaz..!");
+                            document.getElementById("input").focus();
+                            return;
+                        }
+                        var say = 0;
+                        var out2 = "";
+                        var c = 1;
+                        for (i = 0; i < inp.length; i++) {
+                            if (c == 1) {
+                                c = 0;
+                                out2 = inp[i];
+                            } else {
+                                c = 1;
+                                say = say + 1;
+                                if (say > 75) {
+                                    alert("Listedeki link sayısı 75 i geçemez....!");
+                                    break;
+                                }
+                                out = out + kt + ',' + out2 + ',' + inp[i] + "\n";
+                                out = out.replace(/#EXTINF:-[1-9],| #EXTINF:-[1-9],| #EXTINF:[0-9],|   #EXTINF:-[1-9],|   #EXTINF:[0-9],|#EXTINF:[0-9],/g, '');
+                                out = out.replace(" http", "http");
+                                out = out.replace(" ,", ",");
+                                out = out.replace(", ", ",");
+                                out = out.replace("  ,", ",");
+                                out = out.replace("ext,1+1 Международный", "1p1_int,1+1 Международный");
+                                out = out.replace("ext,1+1", "502,1+1");
+                                out = out.replace("ext,100ТВ", "100tv,100ТВ");
+                                out = out.replace("ext,2 Plus (на молд.)", "2plus,2 Plus (на молд.)");
+                                out = out.replace("ext,2+2", "2p2,2+2");
+                                out = out.replace("ext,24 (Телеканал новостей 24)", "news24,24 (Телеканал новостей 24)");
+                                out = out.replace("ext,24 ДОК", "55,24 ДОК");
+                                out = out.replace("ext,24 Техно", "82,24 Техно");
+                                out = out.replace("ext,2Т", "2t,2Т");
+                                out = out.replace("ext,2х2", "39,2х2");
+                                out = out.replace("ext,3+ (Латвия)", "3_plus,3+ (Латвия)");
+                                out = out.replace("ext,365 дней ТВ", "365dney,365 дней ТВ");
+                                out = out.replace("ext,5 канал", "5kanal,5 канал");
+                                out = out.replace("ext,5 канал (Россия)", "7,5 канал (Россия)");
+                                out = out.replace("ext,8 канал", "8-kanal,8 канал");
+                                out = out.replace("ext,8 канал (Беларусь)", "8channel,8 канал (Беларусь)");
+                                out = out.replace("ext,9 канал (Орбита)", "orbita,9 канал (Орбита)");
+                                out = out.replace("ext,A-one", "a-one,A-one");
+                                out = out.replace("ext,A-one Украина", "a-one-ukr,A-one Украина");
+                                out = out.replace("ext,ATR", "atr,ATR");
+                                out = out.replace("ext,AXN Sci-Fi Россия", "20,AXN Sci-Fi Россия");
+                                out = out.replace("ext,Amazing Life", "life,Amazing Life");
+                                out = out.replace("ext,Animal Planet Europe", "animal_ukr,Animal Planet Europe");
+                                out = out.replace("ext,Animal Planet HD", "animal-hd,Animal Planet HD");
+                                out = out.replace("ext,Animal Planet Россия", "25,Animal Planet Россия");
+                                out = out.replace("ext,BBC World News", "bbc-world,BBC World News");
+                                out = out.replace("ext,Baltijos TV (на лит.)", "76,Baltijos TV (на лит.)");
+                                out = out.replace("ext,Bloomberg", "bloomberg,Bloomberg");
+                            }
+                            out = out.replace("ext,Blue Hustler", "hustler-blue,Blue Hustler");
+                            out = out.replace("ext,Bridge TV", "bridge,Bridge TV");
+                            out = out.replace("ext,Brodilo TV", "brodilo,Brodilo TV");
+                            out = out.replace("ext,Business", "busines,Business");
+                            out = out.replace("ext,CCTV Русский", "cctv,CCTV Русский");
+                            out = out.replace("ext,CNL", "cnl,CNL");
+                            out = out.replace("ext,CNL Сибирь", "cnl-sibiria,CNL Сибирь");
+                            out = out.replace("ext,CNL Украина", "cnl-ukraine,CNL Украина");
+                            out = out.replace("ext,CNN", "cnn,CNN");
+                            out = out.replace("ext,Cartoon Network", "cartoon,Cartoon Network");
+                            out = out.replace("ext,Comedy TV", "comedy-tv,Comedy TV");
+                            out = out.replace("ext,Da Vinci Learning Россия", "85,Da Vinci Learning Россия");
+                            out = out.replace("ext,Deutche Welle", "dwelle,Deutche Welle");
+                            out = out.replace("ext,Discovery Channel (Россия)", "26,Discovery Channel (Россия)");
+                            out = out.replace("ext,Discovery HD Showcase", "discov_showcase-hd,Discovery HD Showcase");
+                            out = out.replace("ext,Discovery Science", "28,Discovery Science");
+                            out = out.replace("ext,Discovery World", "27,Discovery World");
+                            out = out.replace("ext,Discovery Восточная Европа", "discov_east,Discovery Восточная Европа");
+                            out = out.replace("ext,Diva Universal Россия", "42,Diva Universal Россия");
+                            out = out.replace("ext,ESPN classic", "espn-eu,ESPN classic");
+                            out = out.replace("ext,English Club TV", "english-club,English Club TV");
+                            out = out.replace("ext,Enter-фильм", "enter-film,Enter-фильм");
+                            out = out.replace("ext,Euronews", "euro,Euronews");
+                            out = out.replace("ext,Europa Plus TV", "87,Europa Plus TV");
+                            out = out.replace("ext,Eurosport 2 North-East HD", "esp2-hd,Eurosport 2 North-East HD");
+                            out = out.replace("ext,Eurosport 2", "58,Eurosport 2");
+                            out = out.replace("ext,Eurosport2", "58,Eurosport2");
+                            out = out.replace("ext,Eurosport", "22,Eurosport");
+                            out = out.replace("ext,Euro", "eutv,Euro");
+                            out = out.replace("ext,Extreme sports", "extreme-sports,Extreme sports");
+                            out = out.replace("ext,FOX Россия", "41,FOX Россия");
+                            out = out.replace("ext,Fashion TV Europe", "fashion,Fashion TV Europe");
+                            out = out.replace("ext,Fox Life HD", "fox-life-hd,Fox Life HD");
+                            out = out.replace("ext,Fox Life Россия", "40,Fox Life Россия");
+                            out = out.replace("ext,France 24 English", "france24,France 24 English");
+                            out = out.replace("ext,Galaxy TV", "galaxy,Galaxy TV");
+                            out = out.replace("ext,Gulli (Россия)", "78,Gulli (Россия)");
+                            out = out.replace("ext,HD Life", "hd-life,HD Life");
+                            out = out.replace("ext,HD Media", "hdmedia,HD Media");
+                            out = out.replace("ext,HD Кино", "600,HD Кино");
+                            out = out.replace("ext,HD Кино 2", "601,HD Кино 2");
+                            out = out.replace("ext,Hustler TV Europe", "hustler-euvrope,Hustler TV Europe");
+                            out = out.replace("ext,ICTV", "500,ICTV");
+                            out = out.replace("ext,Impact TV", "impact,Impact TV");
+                            out = out.replace("ext,Investigation Discovery", "inv-discovery,Investigation Discovery");
+                            out = out.replace("ext,JN1", "jn1,JN1");
+                            out = out.replace("ext,JimJam", "79,JimJam");
+                            out = out.replace("ext,JurnalTV (на молд.)", "jurnal,JurnalTV (на молд.)");
+                            out = out.replace("ext,LNK (на лит.)", "75,LNK (на лит.)");
+                            out = out.replace("ext,LNT (на лат.)", "23,LNT (на лат.)");
+                            out = out.replace("ext,LTV1", "lrt,LTV1");
+                            out = out.replace("ext,LTV1 (на лат.)", "73,LTV1 (на лат.)");
+                            out = out.replace("ext,LTV2", "lrtkult,LTV2");
+                            out = out.replace("ext,LTV7 (на лат.)", "67,LTV7 (на лат.)");
+                            out = out.replace("ext,LookTV", "look,LookTV");
+                            out = out.replace("ext,Luxe.TV HD", "luxtv,Luxe.TV HD");
+                            out = out.replace("ext,MCM Top", "mcm-top,MCM Top");
+                            out = out.replace("ext,MGM International", "mgm-int,MGM International");
+                            out = out.replace("ext,MTV Dance", "mtv-dance,MTV Dance");
+                            out = out.replace("ext,MTV Hits", "mtv-hits,MTV Hits");
+                            out = out.replace("ext,MTV Live HD", "602,MTV Live HD");
+                            out = out.replace("ext,MTV Rocks", "mtv-rocks,MTV Rocks");
+                            out = out.replace("ext,MTV Россия", "53,MTV Россия");
+                            out = out.replace("ext,MTV Украина", "mtvuk,MTV Украина");
+                            out = out.replace("ext,Maxxi-TV", "maxxi,Maxxi-TV");
+                            out = out.replace("ext,Mezzo", "mezzo,Mezzo");
+                            out = out.replace("ext,Mezzo Live HD", "mezzo-hd,Mezzo Live HD");
+                            out = out.replace("ext,MusicBox RU", "mbr,MusicBox RU");
+                            out = out.replace("ext,MusicBox TV", "mbt,MusicBox TV");
+                            out = out.replace("ext,MusicBox UA", "mbu,MusicBox UA");
+                            out = out.replace("ext,N4", "n4,N4");
+                            out = out.replace("ext,Nano TV", "nano,Nano TV");
+                            out = out.replace("ext,Nat Geo Wild", "natgeowild,Nat Geo Wild");
+                            out = out.replace("ext,Nat Geo Wild HD", "wild-hd,Nat Geo Wild HD");
+                            out = out.replace("ext,National Geographic (Россия)", "29,National Geographic (Россия)");
+                            out = out.replace("ext,National Geographic HD", "natgeo-hd,National Geographic HD");
+                            out = out.replace("ext,NewsOne", "newsone,NewsOne");
+                            out = out.replace("ext,Nick Jr", "43,Nick Jr");
+                            out = out.replace("ext,Nickelodeon HD", "nickelod-hd,Nickelodeon HD");
+                            out = out.replace("ext,Nickelodeon СНГ", "31,Nickelodeon СНГ");
+                            out = out.replace("ext,OTV", "o-tv,OTV");
+                            out = out.replace("ext,Ocean TV", "ocean,Ocean TV");
+                            out = out.replace("ext,Outdoor Channel", "outdoor,Outdoor Channel");
+                            out = out.replace("ext,Playboy TV UK", "playboy,Playboy TV UK");
+                            out = out.replace("ext,Pro Все", "pro-vse,Pro Все");
+                            out = out.replace("ext,Publika TV (на молд.)", "publika,Publika TV (на молд.)");
+                            out = out.replace("ext,QTV", "qtv,QTV");
+                            out = out.replace("ext,R1", "r1,R1");
+                            out = out.replace("ext,RTVI", "rtvint,RTVI");
+                            out = out.replace("ext,Real Estate TV", "real-estate,Real Estate TV");
+                            out = out.replace("ext,Ru.Music", "rumusic,Ru.Music");
+                            out = out.replace("ext,Ru.TV", "86,Ru.TV");
+                            out = out.replace("ext,Rusong TV", "rusong,Rusong TV");
+                            out = out.replace("ext,Russia Today", "russia-today,Russia Today");
+                            out = out.replace("ext,Russian Travel Guide", "rtgtv,Russian Travel Guide");
+                            out = out.replace("ext,Rytas.TV (на лит.)", "24,Rytas.TV (на лит.)");
+                            out = out.replace("ext,S-TV", "bulvar-tv,S-TV");
+                            out = out.replace("ext,SONY ТВ (Молдова)", "set-md,SONY ТВ (Молдова)");
+                            out = out.replace("ext,Shopping Live", "shopping-live,Shopping Live");
+                            out = out.replace("ext,Sony TV (Россия)", "set,Sony TV (Россия)");
+                            out = out.replace("ext,Sony Turbo", "sony-turbo,Sony Turbo");
+                            out = out.replace("ext,StarTV", "star,StarTV");
+                            out = out.replace("ext,Style TV", "style,Style TV");
+                            out = out.replace("ext,TLC (Россия)", "tlc-russia,TLC (Россия)");
+                            out = out.replace("ext,TV Polonia", "tvpol,TV Polonia");
+                            out = out.replace("ext,TV1 (на лит.)", "74,TV1 (на лит.)");
+                            out = out.replace("ext,TV1000 Action East", "tv1000-action,TV1000 Action East");
+                            out = out.replace("ext,TV1000 Action East (-21)", "tv1000act-21,TV1000 Action East (-21)");
+                            out = out.replace("ext,TV1000 Comedy HD", "tv1k-comedy-hd,TV1000 Comedy HD");
+                            out = out.replace("ext,TV1000 East", "tv1000,TV1000 East");
+                            out = out.replace("ext,TV1000 Megahit HD", "tv1k-megahit-hd,TV1000 Megahit HD");
+                            out = out.replace("ext,TV1000 Premium", "tv1000-premium,TV1000 Premium");
+                            out = out.replace("ext,TV1000 Premium HD", "tv1k-premium-hd,TV1000 Premium HD");
+                            out = out.replace("ext,TV1000 Русское кино", "tv1000_rus,TV1000 Русское кино");
+                            out = out.replace("ext,TV3", "tv3-lt,TV3");
+                            out = out.replace("ext,TV3 Латвия (на лат.)", "71,TV3 Латвия (на лат.)");
+                            out = out.replace("ext,TV5 (Рига)", "68,TV5 (Рига)");
+                            out = out.replace("ext,TV5 Monde Europe", "tv5monde,TV5 Monde Europe");
+                            out = out.replace("ext,TVC-21", "tvc-21,TVC-21");
+                            out = out.replace("ext,TVRus", "tvrus,TVRus");
+                            out = out.replace("ext,Teen TV", "teen-tv,Teen TV");
+                            out = out.replace("ext,TiJi (Россия)", "77,TiJi (Россия)");
+                            out = out.replace("ext,Travel channel", "travel,Travel channel");
+                            out = out.replace("ext,Ukrainian Fashion", "ukr-fashion,Ukrainian Fashion");
+                            out = out.replace("ext,Universal Channel (Россия)", "universal-russia,Universal Channel (Россия)");
+                            out = out.replace("ext,VH1 Classic Europe", "vh-1-classic,VH1 Classic Europe");
+                            out = out.replace("ext,VH1 Europe", "vh1-europe,VH1 Europe");
+                            out = out.replace("ext,Viasat Explorer CEE / Spice", "explorer,Viasat Explorer CEE / Spice");
+                            out = out.replace("ext,Viasat History", "history,Viasat History");
+                            out = out.replace("ext,Viasat Nature CEE", "viasat-nature,Viasat Nature CEE");
+                            out = out.replace("ext,Viasat Nature/History HD", "nature-history,Viasat Nature/History HD");
+                            out = out.replace("ext,Viasat Sport (Россия)", "viasat-sport,Viasat Sport (Россия)");
+                            out = out.replace("ext,Viasat Sport Baltic", "70,Viasat Sport Baltic");
+                            out = out.replace("ext,World Fashion Channel", "world-fashion,World Fashion Channel");
+                            out = out.replace("ext,XXL", "xxl,XXL");
+                            out = out.replace("ext,Zone Reality", "zone-reality,Zone Reality");
+                            out = out.replace("ext,Zone Romantica", "zone-romantica,Zone Romantica");
+                            out = out.replace("ext,ZooПарк", "zoopark,ZooПарк");
+                            out = out.replace("ext,iConcerts HD", "iconcerts_hd,iConcerts HD");
+                            out = out.replace("ext,myZen.tv", "melody-zen,myZen.tv");
+                            out = out.replace("ext,Авто Плюс", "56,Авто Плюс");
+                            out = out.replace("ext,Агро-ТВ", "agro,Агро-ТВ");
+                            out = out.replace("ext,Астро ТВ", "astro,Астро ТВ");
+                            out = out.replace("ext,БСТ", "bct,БСТ");
+                            out = out.replace("ext,БелМузТВ", "belmuztv,БелМузТВ");
+                            out = out.replace("ext,Беларусь 1", "bt,Беларусь 1");
+                            out = out.replace("ext,Беларусь 2", "lad,Беларусь 2");
+                            out = out.replace("ext,Беларусь ТВ", "beltv,Беларусь ТВ");
+                            out = out.replace("ext,Белсат ТВ", "belsat,Белсат ТВ");
+                            out = out.replace("ext,Боец", "60,Боец");
+                            out = out.replace("ext,Бойцовский клуб", "35,Бойцовский клуб");
+                            out = out.replace("ext,ВТВ", "btb,ВТВ");
+                            out = out.replace("ext,Вопросы и ответы", "voprosy-i-otvety,Вопросы и ответы");
+                            out = out.replace("ext,Время", "vremya,Время");
+                            out = out.replace("ext,Гамма", "gamma,Гамма");
+                            out = out.replace("ext,Глас", "glas,Глас");
+                            out = out.replace("ext,Гумор ТБ / Бабай ТБ", "gumor_babai,Гумор ТБ / Бабай ТБ");
+                            out = out.replace("ext,Детский мир / Телеклуб", "det,Детский мир / Телеклуб");
+                            out = out.replace("ext,Дождь. Optimistic channel", "45,Дождь. Optimistic channel");
+                            out = out.replace("ext,Дом кино", "65,Дом кино");
+                            out = out.replace("ext,Домашние животные", "domashnie-zhivotnye,Домашние животные");
+                            out = out.replace("ext,Домашний", "19,Домашний");
+                            out = out.replace("ext,Домашний магазин", "dommag,Домашний магазин");
+                            out = out.replace("ext,Донбасс", "donbass,Донбасс");
+                            out = out.replace("ext,Драйв", "drive,Драйв");
+                            out = out.replace("ext,Еврокино", "evrokino,Еврокино");
+                            out = out.replace("ext,Еда", "52,Еда");
+                            out = out.replace("ext,Загородная жизнь", "37,Загородная жизнь");
+                            out = out.replace("ext,Загородный", "zagorodny,Загородный");
+                            out = out.replace("ext,Закон ТВ", "zakon,Закон ТВ");
+                            out = out.replace("ext,Звезда", "15,Звезда");
+                            out = out.replace("ext,Здоровое ТВ", "zdorovoe,Здоровое ТВ");
+                            out = out.replace("ext,Знание", "znanie,Знание");
+                            out = out.replace("ext,Зоо ТВ", "zoo-tv,Зоо ТВ");
+                            out = out.replace("ext,Израиль+ Россия", "israel-plus,Израиль+ Россия");
+                            out = out.replace("ext,Иллюзион+", "72,Иллюзион+");
+                            out = out.replace("ext,Индия ТВ", "84,Индия ТВ");
+                            out = out.replace("ext,Интер+", "505,Интер+");
+                            out = out.replace("ext,Интересное ТВ", "interesnoe,Интересное ТВ");
+                            out = out.replace("ext,ИНТЕРЕСНОЕ ТВ", "interesnoe,ИНТЕРЕСНОЕ ТВ");
+                            out = out.replace("ext,Интер", "501,Интер");
+                            out = out.replace("ext,ИНТЕР", "501,ИНТЕР");
+                            out = out.replace("ext,К+", "kplus,К+");
+                            out = out.replace("ext,К1", "k1,К1");
+                            out = out.replace("ext,К2", "k2,К2");
+                            out = out.replace("ext,КГРТРК", "kdrtrk,КГРТРК");
+                            out = out.replace("ext,КРТ", "kiev-rus,КРТ");
+                            out = out.replace("ext,КХЛ ТВ", "36,КХЛ ТВ");
+                            out = out.replace("ext,Канал Disney", "18,Канал Disney");
+                            out = out.replace("ext,Карусель", "9,Карусель");
+                            out = out.replace("ext,Карусель International", "karusel-int,Карусель International");
+                            out = out.replace("ext,КиКо", "kiko,КиКо");
+                            out = out.replace("ext,Киев", "kiev,Киев");
+                            out = out.replace("ext,Кино Плюс", "kino-plus,Кино Плюс");
+                            out = out.replace("ext,Кинопоказ", "kinopokaz,Кинопоказ");
+                            out = out.replace("ext,Кинопоказ HD-1", "kinopokaz-hd1,Кинопоказ HD-1");
+                            out = out.replace("ext,Кинопоказ HD-2", "kinopokaz-hd2,Кинопоказ HD-2");
+                            out = out.replace("ext,Комедия ТВ", "komediya,Комедия ТВ");
+                            out = out.replace("ext,Комсомольская правда", "kp,Комсомольская правда");
+                            out = out.replace("ext,Кто есть кто", "kto-est-kto,Кто есть кто");
+                            out = out.replace("ext,Культура", "4,Культура");
+                            out = out.replace("ext,Культура (Украина)", "kultura-ukr,Культура (Украина)");
+                            out = out.replace("ext,Кухня ТВ", "83,Кухня ТВ");
+                            out = out.replace("ext,М1", "m-1,М1");
+                            out = out.replace("ext,М2-Эстрада", "m-2,М2-Эстрада");
+                            out = out.replace("ext,МЕНЮ-ТВ", "menu,МЕНЮ-ТВ");
+                            out = out.replace("ext,Малятко TV", "malyatko,Малятко TV");
+                            out = out.replace("ext,Мать и дитя", "mat-i-ditya,Мать и дитя");
+                            out = out.replace("ext,Мега", "mega,Мега");
+                            out = out.replace("ext,Мир 24", "mir24,Мир 24");
+                            out = out.replace("ext,Мир сериала", "mir-seriala,Мир сериала");
+                            out = out.replace("ext,МирТВ", "46,МирТВ");
+                            out = out.replace("ext,Многосерийное ТВ", "mnogo-tv,Многосерийное ТВ");
+                            out = out.replace("ext,Молдова 1", "moldova1,Молдова 1");
+                            out = out.replace("ext,Москва-24", "moskva24,Москва-24");
+                            out = out.replace("ext,Моя дитина", "moya-dytyna,Моя дитина");
+                            out = out.replace("ext,Моя планета", "88,Моя планета");
+                            out = out.replace("ext,Музыка Первого", "81,Музыка Первого");
+                            out = out.replace("ext,Мультимания", "multimania,Мультимания");
+                            out = out.replace("ext,НАШ", "nash,НАШ");
+                            out = out.replace("ext,НЛО-ТВ", "nlo,НЛО-ТВ");
+                            out = out.replace("ext,НСТ (Страшное)", "nstv,НСТ (Страшное)");
+                            out = out.replace("ext,НТА", "nta,НТА");
+                            out = out.replace("ext,НТВ+ Баскетбол", "33,НТВ+ Баскетбол");
+                            out = out.replace("ext,НТВ+ Киноклуб", "ntv-kinoklub,НТВ+ Киноклуб");
+                            out = out.replace("ext,НТВ+ Кинохит", "49,НТВ+ Кинохит");
+                            out = out.replace("ext,НТВ-Плюс Кинохит", "49,НТВ-Плюс Кинохит");
+                            out = out.replace("ext,НТВ+ Наш футбол", "62,НТВ+ Наш футбол");
+                            out = out.replace("ext,НТВ+ Премьера", "69,НТВ+ Премьера");
+                            out = out.replace("ext,НТВ+ Спорт", "51,НТВ+ Спорт");
+                            out = out.replace("ext,НТВ+ Спорт Онлайн", "ntv-sport-online,НТВ+ Спорт Онлайн");
+                            out = out.replace("ext,НТВ+ Спорт Союз", "59,НТВ+ Спорт Союз");
+                            out = out.replace("ext,НТВ+ Теннис", "66,НТВ+ Теннис");
+                            out = out.replace("ext,НТВ+ Футбол", "57,НТВ+ Футбол");
+                            out = out.replace("ext,НТВ+ Футбол 2", "61,НТВ+ Футбол 2");
+                            out = out.replace("ext,НТВ-Беларусь", "ntv-bel,НТВ-Беларусь");
+                            out = out.replace("ext,НТВ-Мир", "ntvmir,НТВ-Мир");
+                            out = out.replace("ext,НТВ", "3,НТВ");
+                            out = out.replace("ext,НТН", "ntn,НТН");
+                            out = out.replace("ext,Наука 2.0", "50,Наука 2.0");
+                            out = out.replace("ext,Наше кино", "64,Наше кино");
+                            out = out.replace("ext,Наше кино (НТВ+)", "ntv-nashekino,Наше кино (НТВ+)");
+                            out = out.replace("ext,Наше новое кино", "63,Наше новое кино");
+                            out = out.replace("ext,Новый канал", "novkan,Новый канал");
+                            out = out.replace("ext,Ностальгия", "nostalgia,Ностальгия");
+                            out = out.replace("ext,Ночной клуб", "nochnoy-club,Ночной клуб");
+                            out = out.replace("ext,О2ТВ", "o2tv,О2ТВ");
+                            out = out.replace("ext,ОНТ", "ont,ОНТ");
+                            out = out.replace("ext,ОСТ ТВ (Оружие Спорт Техника)", "54,ОСТ ТВ (Оружие Спорт Техника)");
+                            out = out.replace("ext,Оружие", "oruzhie,Оружие");
+                            out = out.replace("ext,Открытый мир", "otkr-mir,Открытый мир");
+                            out = out.replace("ext,Охота и рыбалка", "ohota-i-rybalka,Охота и рыбалка");
+                            out = out.replace("ext,Охотник и рыболов", "34,Охотник и рыболов");
+                            out = out.replace("ext,ПИК ТВ", "piktv,ПИК ТВ");
+                            out = out.replace("ext,Парк развлечений", "park-razvlecheniy,Парк развлечений");
+                            out = out.replace("ext,Первый Ukraine", "1ukraine,Первый Ukraine");
+                            out = out.replace("ext,Первый автомобильный", "1avto,Первый автомобильный");
+                            out = out.replace("ext,Первый деловой", "504,Первый деловой");
+                            out = out.replace("ext,Первый канал (Россия)", "1,Первый канал (Россия)");
+                            out = out.replace("ext,Первый канал - Prime", "prime-md,Первый канал - Prime");
+                            out = out.replace("ext,Первый канал HD", "604,Первый канал HD");
+                            out = out.replace("ext,Первый", "1,Первый");
+                            out = out.replace("ext,ТРК Эра", "ut-1,ТРК Эра");
+                            out = out.replace("ext,Первый образовательный", "sga-tv,Первый образовательный");
+                            out = out.replace("ext,Перец", "8,Перец");
+                            out = out.replace("ext,Пиксель", "enter,Пиксель");
+                            out = out.replace("ext,Планета", "planeta,Планета");
+                            out = out.replace("ext,ПлюсПлюс", "citi,ПлюсПлюс");
+                            out = out.replace("ext,Погода ТВ", "pogodatv,Погода ТВ");
+                            out = out.replace("ext,Подмосковье", "podmoskovie,Подмосковье");
+                            out = out.replace("ext,Просвещение", "prosveschenie,Просвещение");
+                            out = out.replace("ext,Психология21", "psihologiya21,Психология21");
+                            out = out.replace("ext,РБК ТВ", "38,РБК ТВ");
+                            out = out.replace("ext,РЕН ТВ", "14,РЕН ТВ");
+                            out = out.replace("ext,РЕН ТВ (Балтия)", "ren_baltija,РЕН ТВ (Балтия)");
+                            out = out.replace("ext,РЖД ТВ", "rzd,РЖД ТВ");
+                            out = out.replace("ext,РТР-Беларусь", "rtr-bel,РТР-Беларусь");
+                            out = out.replace("ext,РТР-Планета Европа", "rtrpl,РТР-Планета Европа");
+                            out = out.replace("ext,РТР-Планета СНГ", "48,РТР-Планета СНГ");
+                            out = out.replace("ext,Рада", "rada,Рада");
+                            out = out.replace("ext,Радость моя", "radost-moya,Радость моя");
+                            out = out.replace("ext,РазТВ", "raz,РазТВ");
+                            out = out.replace("ext,Рен ТВ (Молдова)", "rentv-md,Рен ТВ (Молдова)");
+                            out = out.replace("ext,Россия 1", "2,Россия 1");
+                            out = out.replace("ext,Россия 24", "6,Россия 24");
+                            out = out.replace("ext,Россия 2", "5,Россия 2");
+                            out = out.replace("ext,Россия HD", "605,Россия HD");
+                            out = out.replace("ext,Русская ночь", "russkaya-noch,Русская ночь");
+                            out = out.replace("ext,Русский бестселлер", "rus-bestseller,Русский бестселлер");
+                            out = out.replace("ext,Русский иллюзион", "illuzion,Русский иллюзион");
+                            out = out.replace("ext,Русский роман", "rus-roman,Русский роман");
+                            out = out.replace("ext,Русский экстрим", "russkij-extreme,Русский экстрим");
+                            out = out.replace("ext,СТБ", "503,СТБ");
+                            out = out.replace("ext,СТВ", "ctv,СТВ");
+                            out = out.replace("ext,СТС", "12,СТС");
+                            out = out.replace("ext,Сарафан", "sarafan,Сарафан");
+                            out = out.replace("ext,Совершенно секретно", "89,Совершенно секретно");
+                            out = out.replace("ext,Союз (Екатеринбург)", "soyuz,Союз (Екатеринбург)");
+                            out = out.replace("ext,Спас", "spas,Спас");
+                            out = out.replace("ext,Спорт", "47,Спорт");
+                            out = out.replace("ext,Спорт 1", "sport1,Спорт 1");
+                            out = out.replace("ext,Спорт 1 (Россия)", "21,Спорт 1 (Россия)");
+                            out = out.replace("ext,Спорт 1 HD", "603,Спорт 1 HD");
+                            out = out.replace("ext,Спорт 2", "sport2,Спорт 2");
+                            out = out.replace("ext,Спорт Плюс", "32,Спорт Плюс");
+                            out = out.replace("ext,Страна", "strana,Страна");
+                            out = out.replace("ext,ТБН Россия", "tbn-russia,ТБН Россия");
+                            out = out.replace("ext,ТВ XXI", "13,ТВ XXI");
+                            out = out.replace("ext,ТВ Магазины", "tv-shop,ТВ Магазины");
+                            out = out.replace("ext,ТВ Центр", "10,ТВ Центр");
+                            out = out.replace("ext,ТВ Центр Международный (TVCI)", "tvcint,ТВ Центр Международный (TVCI)");
+                            out = out.replace("ext,ТВ3 Россия", "11,ТВ3 Россия");
+                            out = out.replace("ext,ТВ7-НТВ", "tv7-md,ТВ7-НТВ");
+                            out = out.replace("ext,ТВi", "tvi,ТВi");
+                            out = out.replace("ext,ТДК", "tdk,ТДК");
+                            out = out.replace("ext,ТЕТ", "tet,ТЕТ");
+                            out = out.replace("ext,ТНВ-Татарстан", "tnv,ТНВ-Татарстан");
+                            out = out.replace("ext,ТНТ", "16,ТНТ");
+                            out = out.replace("ext,ТНТ Bravo", "tnt-bravo,ТНТ Bravo");
+                            out = out.replace("ext,ТРО", "tpo,ТРО");
+                            out = out.replace("ext,ТТС", "ttc,ТТС");
+                            out = out.replace("ext,Телекафе", "telecafe,Телекафе");
+                            out = out.replace("ext,Телепутешествия", "puteshestviya,Телепутешествия");
+                            out = out.replace("ext,Телепутешествия HD", "puteshestviya-hd,Телепутешествия HD");
+                            out = out.replace("ext,Тиса-1", "tysa,Тиса-1");
+                            out = out.replace("ext,Тонис", "tonis,Тонис");
+                            out = out.replace("ext,Тонус ТВ", "tonus-tv,Тонус ТВ");
+                            out = out.replace("ext,УБР", "ubr,УБР");
+                            out = out.replace("ext,УТР", "utr,УТР");
+                            out = out.replace("ext,Украина", "trk-ukraina,Украина");
+                            out = out.replace("ext,Улыбка ребенка", "ulibka-rebenka,Улыбка ребенка");
+                            out = out.replace("ext,Униан ТВ", "unian,Униан ТВ");
+                            out = out.replace("ext,Усадьба", "usadba,Усадьба");
+                            out = out.replace("ext,Феникс+Кино", "fenix+kino,Феникс+Кино");
+                            out = out.replace("ext,Футбол (Россия)", "futbol,Футбол (Россия)");
+                            out = out.replace("ext,Футбол (Украина)", "futbol-ukr,Футбол (Украина)");
+                            out = out.replace("ext,Футбол+", "futbol-plus,Футбол+");
+                            out = out.replace("ext,Хоккей", "hockey,Хоккей");
+                            out = out.replace("ext,ЧП.INFO", "chp-info,ЧП.INFO");
+                            out = out.replace("ext,Черноморская ТРК", "chernomorka,Черноморская ТРК");
+                            out = out.replace("ext,Шансон ТВ", "80,Шансон ТВ");
+                            out = out.replace("ext,Эко-ТВ", "eko,Эко-ТВ");
+                            out = out.replace("ext,Эксперт ТВ", "expert,Эксперт ТВ");
+                            out = out.replace("ext,Ю", "44,Ю");
+                            out = out.replace("ext,Юмор Box", "umor,Юмор Box");
+                        }
+                        document.getElementById("output").value = out;
+                    } else {
+                        alert('Liste boş...!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                //.wpl
+                if (document.form1.format[5].checked) {
+                    if (document.getElementById("input").value != "") {
+                        var c = 0;
+                        for (i = 0; i < inp.length; i++) {
+                            if (c == 1) {
+                                c = 0;
+                                out = out + "\t\t\t" + '<media src="' + inp[i] + out2 + '"/>' + "\n";
+                                out = out.replace(" http", "http");
+                                out = out.replace(" /", "/");
+                                out = out.replace(/#EXTINF:-[1-9],| #EXTINF:-[1-9],| #EXTINF:[0-9],|#EXTINF:[0-9],/g, '');
+                            } else {
+                                c = 1;
+                                out2 = '/' + inp[i];
+                            }
+                        }
+                        out = out + "\t\t" + '</seq>' + "\n" + "\t" + '</body>' + "\n";
+                        var lenght2 = inp.length / 2;
+                        document.getElementById("output").value = '<?wpl version="1.0"?>' + "\n" + '<smil>' + "\n" + "\t" + '<head>' + "\n" + "\t\t" + '<meta name="Generator" content="Microsoft Windows Media Player -- 11.0.5721.5145"/>' + "\n" + "\t\t" + '<meta name="AverageRating" content="0"/>' + "\n" + "\t\t" + '<meta name="TotalDuration" content="0"/>' + "\n" + "\t\t" + '<meta name="ItemCount" content="' + lenght2 + '"/>' + "\n" + "\t\t" + '<author/>' + "\n" + "\t\t" + '<title>КиноЗал POSLE</title>' + "\n" + "\t" + '</head>' + "\n" + "\t" + '<body>' + "\n" + "\t\t" + '<seq>' + "\n" + out + '</smil>';
+                    } else {
+                        alert('Посетите форум КиноЗала POSLE и введите выбраный Вами плейлист в первое окно!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                //.mpcpl
+                if (document.form1.format[6].checked) {
+                    if (document.getElementById("input").value != "") {
+                        var out2 = "";
+                        var c = 1;
+                        var co = 1;
+                        for (i = 0; i < inp.length; i++) {
+                            if (c == 1) {
+                                c = 0;
+                                out2 = inp[i];
+                            } else {
+                                c = 1;
+                                out = out + co + ',type,0' + "\n" + co + ',label' + ',' + out2 + "\n" + co + ',filename' + ',' + inp[i] + "\n";
+                                co++;
+                                out = out.replace(" http", "http");
+                                out = out.replace(/#EXTINF:-[1-9],| #EXTINF:-[1-9],| #EXTINF:[0-9],|#EXTINF:[0-9],/g, '');
+                            }
+                        }
+                        var lenght2 = inp.length / 2;
+                        document.getElementById("output").value = 'MPCPLAYLIST' + "\n" + out;
+                    } else {
+                        alert('Посетите форум КиноЗала POSLE и введите выбраный Вами плейлист в первое окно!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                if (document.form1.format[7].checked) {
+                    if (document.getElementById("input").value != "") {
+                        var c = 0;
+                        for (i = 0; i < inp.length; i++) {
+                            if (c == 1) {
+                                c = 0;
+                                out = out + "\t\t\t" + '<location>' + inp[i] + '</location>' + "\n" + "\t\t" + '</track>' + "\n";
+                            } else {
+                                c = 1;
+                                out = out + "\t\t" + '<track>' + "\n" + "\t\t\t" + '<title>' + inp[i] + '</title>' + "\n";
+                                out = out.replace(/#EXTINF:| #EXTINF:|[0-9],|-[1-9],|,/g, '');
+                                out = out.replace(" http", "http");
+                                out = out.replace(" </location>", "</location>");
+                                out = out.replace(" </title>", "</title>");
+                            }
+                        }
+                        document.getElementById("output").value = '<?xml version="1.0" encoding="UTF-8"?>' + "\n" + '<playlist version="1" xmlns="http://xspf.org/ns/0/">' + "\n" + "\t" + '<trackList>' + "\n" + out + "\t" + '</trackList>' + "\n" + '</playlist>';
+                    } else {
+                        alert('Посетите форум КиноЗала POSLE и введите выбраный Вами плейлист в первое окно!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                //.pls
+                if (document.form1.format[8].checked) {
+                    if (document.getElementById("input").value != "") {
+                        var out2 = "";
+                        var c = 1;
+                        var co = 1;
+                        for (i = 0; i < inp.length; i++) {
+                            if (c == 1) {
+                                c = 0;
+                                out2 = "\n" + 'Title' + co + '=' + inp[i] + "\n" + 'Length' + co + '=0' + "\n";
+                            } else {
+                                c = 1;
+                                out = out + 'File' + co + '=' + inp[i] + out2 + "\n";
+                                co++;
+                                out = out.replace(/#EXTINF:| #EXTINF:|[0-9],|-[1-9],|,/g, '');
+                                out = out.replace(" http", "http");
+                            }
+                        }
+                        var lenght2 = inp.length / 2;
+                        document.getElementById("output").value = '[playlist]' + "\n\n" + out + 'NumberOfEntries=' + lenght2 + "\n\n" + 'Version=2';
+                    } else {
+                        alert('Посетите форум КиноЗала POSLE и введите выбраный Вами плейлист в первое окно!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                //Azbox
+                if (document.form1.format[9].checked) {
+                    if (document.getElementById("input").value != "") {
+                        var out2 = "";
+                        var c = 1;
+                        var buffersize = '256';
+                        for (i = 0; i < inp.length; i++) {
+                            if (c == 1) {
+                                c = 0;
+                                out2 = inp[i];
+                            } else {
+                                c = 1;
+                                out = out + ((i + 1) / 2) + ',' + out2 + ',' + buffersize + ',' + inp[i] + "\n";
+                                out = out.replace(/#EXTINF:-[1-9],| #EXTINF:-[1-9],| #EXTINF:[0-9],|#EXTINF:[0-9],/g, '');
+                                out = out.replace(" http", "http");
+                                out = out.replace(" ,", ",");
+                            }
+                        }
+                        document.getElementById("output").value = out;
+                    } else {
+                        alert('Посетите форум КиноЗала POSLE и введите выбраный Вами плейлист в первое окно!');
+                        document.getElementById("input").focus();
+                    }
+                }
+            } else if (document.form1.list[1].checked) {
+                //.m3u
+                if (document.form1.format[0].checked) {
+                    if (document.getElementById("input").value != "") {
+                        for (i = 0; i < inp.length; i++) {
+                            out = out + '#EXTINF:0,Kanal ' + (i + 1) + "\n" + inp[i] + "\n";
+                        }
+                        document.getElementById("output").value = '#EXTM3U' + "\n" + out;
+                    } else {
+                        alert('Посетите форум КиноЗала POSLE и введите выбраный Вами плейлист в первое окно!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                //.pls
+                if (document.form1.format[6].checked) {
+                    if (document.getElementById("input").value != "") {
+                        var co = 1;
+                        for (i = 0; i < inp.length; i++) {
+                            out = out + co + ',' + 'type' + ',' + '0' + "\n" + co + ',' + 'filename' + ',' + inp[i] + "\n";
+                            co++;
+                        }
+                        document.getElementById("output").value = 'MPCPLAYLIST' + "\n" + out;
+                    } else {
+                        alert('Посетите форум КиноЗала POSLE и введите выбраный Вами плейлист в первое окно!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                //.wpl
+                if (document.form1.format[7].checked) {
+                    if (document.getElementById("input").value != "") {
+                        for (i = 0; i < inp.length; i++) {
+                            out = out + "\t\t\t" + '<media src="' + inp[i] + '" />' + "\n";
+                        }
+                        out = out + "\t\t" + '</seq>' + "\n" + "\t" + '</body>' + "\n";
+                        document.getElementById("output").value = '<?wpl version="1.0"?>' + "\n" + '<smil>' + "\n" + "\t" + '<head>' + "\n" + "\t\t" + '<meta name="Generator" content="Microsoft Windows Media Player -- 11.0.5721.5145"/>' + "\n" + "\t\t" + '<meta name="AverageRating" content="0"/>' + "\n" + "\t\t" + '<meta name="TotalDuration" content="0"/>' + "\n" + "\t\t" + '<meta name="ItemCount" content="' + inp.length + '"/>' + "\n" + "\t\t" + '<author/>' + "\n" + "\t\t" + '<title></title>' + "\n" + "\t" + '</head>' + "\n" + "\t" + '<body>' + "\n" + "\t\t" + '<seq>' + "\n" + out + '</smil>';
+                    } else {
+                        alert('Посетите форум КиноЗала POSLE и введите выбраный Вами плейлист в первое окно!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                //.xspf
+                if (document.form1.format[8].checked) {
+                    if (document.getElementById("input").value != "") {
+                        for (i = 0; i < inp.length; i++) {
+                            out = out + "\t\t" + '<track>' + "\n" + "\t\t\t" + '<title>Kanal ' + (i + 1) + '</title>' + "\n" + "\t\t\t" + '<location>' + inp[i] + '</location>' + "\n" + "\t\t" + '</track>' + "\n";
+                        }
+                        document.getElementById("output").value = '<?xml version="1.0" encoding="UTF-8"?>' + "\n" + '<playlist version="1" xmlns="http://xspf.org/ns/0/">' + "\n" + "\t" + '<trackList>' + "\n" + out + "\t" + '</trackList>' + "\n" + '</playlist>';
+                    } else {
+                        alert('Посетите форум КиноЗала POSLE и введите выбраный Вами плейлист в первое окно!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                //.pls
+                if (document.form1.format[9].checked) {
+                    if (document.getElementById("input").value != "") {
+                        var co = 1;
+                        for (i = 0; i < inp.length; i++) {
+                            out = out + 'File' + co + '=' + inp[i] + "\n" + 'Title' + co + '=Kanal' + co + "\n" + 'Length' + co + '=0' + "\n\n";
+                            co++;
+                        }
+                        document.getElementById("output").value = '[playlist]' + "\n\n" + out + 'NumberOfEntries=' + inp.length + "\n\n" + 'Version=2';
+                    } else {
+                        alert('Посетите форум КиноЗала POSLE и введите выбраный Вами плейлист в первое окно!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                //Azbox
+                if (document.form1.format[10].checked) {
+                    if (document.getElementById("input").value != "") {
+                        var buffersize = '256';
+                        for (i = 0; i < inp.length; i++) {
+                            out = out + (i + 1) + ',' + 'Kanal ' + (i + 1) + ',' + buffersize + ',' + inp[i] + "\n";
+                        }
+                        document.getElementById("output").value = out;
+                    } else {
+                        alert('Посетите форум КиноЗала POSLE и введите выбраный Вами плейлист в первое окно!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                //.xml
+                if (document.form1.format[11].checked) {
+                    if (document.getElementById("input").value != "") {
+                        for (i = 0; i < inp.length; i++) {
+                            out = out + '<channel>' + "\n" + "\t" + '<title>Kanal ' + (i + 1) + '</title>' + "\n" + "\t" + '<description></description>' + "\n" + "\t" + '<stream_url>' + inp[i] + '</stream_url>' + "\n" + '</channel>' + "\n";
+                        }
+                        document.getElementById("output").value = '<?xml version="1.0" encoding="UTF-8"?>' + "\n" + '<items>' + "\n" + out + '</items>' + "\n";
+                    } else {
+                        alert('Посетите форум КиноЗала POSLE и введите выбраный Вами плейлист в первое окно!');
+                        document.getElementById("input").focus();
+                    }
+                }
+                //
+            }
+        }
+
+        function SelecText(output) {
+            document.getElementById("output").select()
+        }
+    </script>
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-57728344-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+</body>
+</html>

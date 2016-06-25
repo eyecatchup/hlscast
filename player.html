@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>HLS/M3U8 HTML5-Player</title>
+    <meta name='description' content='Watch live streams / IPTV with ease.'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+    <meta name='mobile-web-app-capable' content='yes'>
+    <meta name='application-name' content='Watch network streams'>
+    <meta name='theme-color' content='#000000'>
+    <meta name='apple-mobile-web-app-capable' content='yes'>
+    <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent'>
+    <meta name='apple-mobile-web-app-title' content='Watch network streams'>
+    <style id='baseCss'>
+        html,body{height:100%;}body{background:url(./static/img/euro2016bg.jpg) no-repeat center center fixed;background-size:cover;background-color:#000;text-align:center;line-height:2.2em;padding-top:1%;font-family:Arial;overflow:hidden;}
+        h1,h2,h3,#info span,#info a,.link-extern,.link-extern a{color:#fff;text-shadow:3px 3px 2px #000;}h1{font-size:1.6em;}h2{font-size:1.175em;font-weight:400;line-height:1.2em;}h3{font-size:.85em;font-weight:300;line-height:1.3em;}#info{font-size:80%;}.video-js{margin:0 auto;}
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/5.10.2/alt/video-js-cdn.css" rel="stylesheet">
+    <link rel='shortcut icon' href='./static/img/castIcon_128.png'>
+    <link rel='icon' href='./static/img/castIcon_128.png' type='image/x-icon'>
+</head>
+<body>
+    <header id='header'>
+        <hgroup>
+            <h1>HLS (HTTP-Live-Streaming) / M3U8 Player</h1>
+            <h3>Watch live streams / IPTV with ease in the browser.</h3>
+        </hgroup>
+    </header>
+    <div id='player'></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/5.10.2/video.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/3.1.0/videojs-contrib-hls.min.js'></script>
+    <script src='./static/js/player.browser.min.js'></script>
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-57728344-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+</body>
+</html>
