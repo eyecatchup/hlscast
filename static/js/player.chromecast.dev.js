@@ -223,7 +223,7 @@ function toHHMMSS(secs) {
 function guessMimeType(str) {
     if (str.indexOf('.mp3') != -1) {
         document.getElementById('mediaMimeType').selectedIndex = 2;
-    } else if (str.indexOf('.mp4') != -1) {
+    } else if (str.indexOf('.mp4') != -1 || str.indexOf('.mkv') != -1) {
         document.getElementById('mediaMimeType').selectedIndex = 1;
     } else if (str.indexOf('.m3u8') != -1) {
         document.getElementById('mediaMimeType').selectedIndex = 0;
