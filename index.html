@@ -24,18 +24,39 @@
         <h4>1. Launch Chromecast session</h4>
         <button class="btn" onclick="launchApp()">Launch session</button>
         <h4>2. Load network stream</h4>
-        Enter stream URL (click to select predefined):
-        <a onclick='setLivestream(0);return false;' href='#'>[ARD]</a> -
-        <a onclick='setLivestream(1);return false;' href='#'>[Sportschau]</a> -
-        <a onclick='setLivestream(2);return false;' href='#'>[ZDF]</a> -
-        <a onclick='setLivestream(3);return false;' href='#'>[SAT1]</a><br>
+        Enter stream URL (or click to select 24h live stream from the channel list below):<br><br>
         <input type="text" onkeyup="guessMimeType(this.value);" style="width:500px;" name="networkStreamUrl" value="" size="70" id="networkStreamUrl" placeholder="Network stream URL, eg. http://sub.domain.tld:port/path/file.ext"><br><br>
-        Choose media type (cast-only, not required for browser playback):<br>
-        <select name="mediaMimeType" id="mediaMimeType" style="width:500px;">
+        <!--Choose media type (cast-only, not required for browser playback):<br>-->
+        <select name="mediaMimeType" id="mediaMimeType" style="width:500px;color:#a1a1a1;border-color:#ccc;">
             <option value="application/vnd.apple.mpegurl">application/vnd.apple.mpegurl (HTTP-Live-Streaming, m3u8 playlists)</option>
             <option value="video/mp4">video/mp4 (raw mp4/mkv video files)</option>
             <option value="audio/mpeg">audio/mpeg (raw mp3 audio files)</option>
         </select>
+        <div id='iptv-wrapper'>
+            <h5>German IPTV - 24h live streams <a onclick='return toggleChannels();' href='#'><code>[Toggle channel list]</code></a></h5>
+            <div id='iptv-list' style='display:none;'>
+                <ul style='float:left;margin:0;margin-right:15px;min-width:120px;'>
+                    <li><a onclick='return setLivestream(0);' href='#'>[ARD]</a></li>
+                    <li><a onclick='return setLivestream(1);' href='#'>[ZDF]</a></li>
+                    <li><a onclick='return setLivestream(2);' href='#'>[ZDF.neo]</a></li>
+                    <li><a onclick='return setLivestream(3);' href='#'>[ZDF.info]</a></li>
+                    <li><a onclick='return setLivestream(4);' href='#'>[Phoenix]</a></li>
+                    <li><a onclick='return setLivestream(5);' href='#'>[3sat]</a></li>
+                </ul>
+                <ul>
+                    <li><a onclick='return setLivestream(6);' href='#'>[WDR]</a></li>
+                    <li><a onclick='return setLivestream(10);' href='#'>[NDR]</a></li>
+                    <li><a onclick='return setLivestream(11);' href='#'>[Arte]</a></li>
+                    <li><a onclick='return setLivestream(9);' href='#'>[Tagesschau24]</a></li>
+                    <li><a onclick='return setLivestream(13);' href='#'>[ran.de]</a></li>
+                    <li><a onclick='return setLivestream(12);' href='#'>[ran.de 2]</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style='display:none;' id='playlist-wrapper'>
+            <h5>Your playlist</h5>
+            <ul id='playlist'></ul>
+        </div>
         <h4>3. Choose playback method</h4>
         <button type="submit" name="loadCustomMedia" class="btn" onclick="loadCustomMedia();">Cast to device</button> or, alternatively,
         <button type="submit" name="playCustomMedia" class="btn" onclick="playCustomMedia();">play in browser</button>
@@ -45,10 +66,10 @@
     Media position:  <span id="progress_tick">00:00:00</span>
     Media duration:  <span id="duration">00:00:00</span>
     Progress bar:    <input id="progress" type="range" min="1" max="100" value="0.1" step="0.1" onmouseup="seekMedia(this.value);">
-    Volume bar:      <input id="volumething" type="range" min="0" max="100" step="1" onmouseup="setReceiverVolume(this.value/100,false);">
-    Volume mute:     <a href="#" id="mutelink" onclick="setReceiverVolume(currentVolume, true);this.style.display = 'none';document.getElementById('unmutelink').style.display = 'initial';return false; ">Mute</a><a href="#" style="display:none;" id="unmutelink" onclick="setReceiverVolume(currentVolume, false);this.style.display = 'none';document.getElementById('mutelink').style.display = 'initial';return false; ">Unmute</a>
-    Control media:   <a href="#" onclick="playMedia();return false; " id="playpauseresume" >Play</a> - <a href="#" onclick="stopMedia();return false; ">Unload media</a>
-    Control session: <a href="#" onclick="launchApp();return false; ">Start session</a> - <a href="#" onclick="stopApp();return false; ">Exit session</a>
+    Volume bar:      <input id="volumething" type="range" min="0" max="100" value="100" step="1" onmouseup="setReceiverVolume(this.value/100,false);">
+    Volume mute:     <a href="#" id="mutelink" onclick="setReceiverVolume(currentVolume, true); this.style.display = 'none'; document.getElementById('unmutelink').style.display = 'initial'; return false; ">Mute</a><a href="#" style="display:none;" id="unmutelink" onclick="setReceiverVolume(currentVolume, false);this.style.display = 'none';document.getElementById('mutelink').style.display = 'initial';return false; ">Unmute</a>
+    Control media:   <a href="#" onclick="playMedia(); return false; " id="playpauseresume" >Play</a></li> <a href="#" onclick="stopMedia(); return false; ">Unload media</a>
+    Control session: <a href="#" onclick="launchApp(); return false; ">Start session</a></li> <a href="#" onclick="stopApp(); return false; ">Exit session</a>
         </pre>
     </div>
     <p><strong>NOTE</strong>: Chromecast follows the <a href="http://en.wikipedia.org/wiki/Same_origin_policy" target='_blank'>Same-origin policy</a>. Meaning: Chromecast will <b>not</b> play any network media files, unless the streaming server properly supports CORS for <strong>all</strong> requests (using <code>*</code>).<br></p>
@@ -59,6 +80,18 @@
         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
         ga('create', 'UA-57728344-1', 'auto');
         ga('send', 'pageview');
+
+        window.onload = function () {
+            var queryParams = getQueryParams()
+              , videos = ('undefined' !== typeof queryParams.urls) ? encodeURI(queryParams.urls) : false;
+
+            console.log('Request params:');
+            console.dir(queryParams);
+
+            if (!!videos && '' !== videos) {
+                createVideoPlaylist(videos);
+            }
+        };
     </script>
     <!-- Based on: https://pwnt.dk/tools/chromecast.php -->
 </body>
