@@ -14,7 +14,7 @@
     <link rel='shortcut icon' href='./static/img/castIcon_128.png'>
     <link rel='icon' href='./static/img/castIcon_128.png' type='image/x-icon'>
     <script src='https://www.gstatic.com/cv/js/sender/v1/cast_sender.js'></script>
-    <script src='./static/js/player.chromecast.min.js'></script>
+    <script src='./static/js/player.chromecast.dev.js'></script>
 </head>
 <body>
     <header>
@@ -35,21 +35,39 @@
         <div id='iptv-wrapper'>
             <h5>German IPTV - 24h live streams <a onclick='return toggleChannels();' href='#'><code>[Toggle channel list]</code></a></h5>
             <div id='iptv-list' style='display:none;'>
-                <ul style='float:left;margin:0;margin-right:15px;min-width:120px;'>
-                    <li><a onclick='return setLivestream(0);' href='#'>[ARD]</a></li>
-                    <li><a onclick='return setLivestream(1);' href='#'>[ZDF]</a></li>
-                    <li><a onclick='return setLivestream(2);' href='#'>[ZDF.neo]</a></li>
-                    <li><a onclick='return setLivestream(3);' href='#'>[ZDF.info]</a></li>
-                    <li><a onclick='return setLivestream(4);' href='#'>[Phoenix]</a></li>
-                    <li><a onclick='return setLivestream(5);' href='#'>[3sat]</a></li>
+                <ul style='float:left;margin:0;margin-right:15px;min-width:300px;'>
+                    <li><a onclick='return setLivestream(0);' href='#'>[ARD Alpha]</a></li>
+                    <li><a onclick='return setLivestream(1);' href='#'>[Arte (DE)]</a></li>
+                    <li><a onclick='return setLivestream(3);' href='#'>[BR (Nord)]</a></li>
+                    <li><a onclick='return setLivestream(4);' href='#'>[BR (Sued)]</a></li>
+                    <li><a onclick='return setLivestream(5);' href='#'>[Das Erste]</a></li>
+                    <li><a onclick='return setLivestream(6);' href='#'>[Deutsche Welle]</a></li>
+                    <li><a onclick='return setLivestream(7);' href='#'>[HR]</a></li>
+                    <li><a onclick='return setLivestream(8);' href='#'>[KIKA]</a></li>
+                    <li><a onclick='return setLivestream(9);' href='#'>[MDR (Sachsen)]</a></li>
+                    <li><a onclick='return setLivestream(10);' href='#'>[MDR (Sachsen-Anhalt)]</a></li>
+                    <li><a onclick='return setLivestream(11);' href='#'>[MDR (Thueringen)]</a></li>
+                    <li><a onclick='return setLivestream(12);' href='#'>[NDR (Hamburg)]</a></li>
+                    <li><a onclick='return setLivestream(13);' href='#'>[NDR (Mecklenburg-Vorpommern)]</a></li>
+                    <li><a onclick='return setLivestream(14);' href='#'>[NDR (Niedersachsen)]</a></li>
+                    <li><a onclick='return setLivestream(15);' href='#'>[NDR (Schleswig-Holstein)]</a></li>
                 </ul>
                 <ul>
-                    <li><a onclick='return setLivestream(6);' href='#'>[WDR]</a></li>
-                    <li><a onclick='return setLivestream(10);' href='#'>[NDR]</a></li>
-                    <li><a onclick='return setLivestream(11);' href='#'>[Arte]</a></li>
-                    <li><a onclick='return setLivestream(9);' href='#'>[Tagesschau24]</a></li>
-                    <li><a onclick='return setLivestream(13);' href='#'>[ran.de]</a></li>
-                    <li><a onclick='return setLivestream(12);' href='#'>[ran.de 2]</a></li>
+                    <li><a onclick='return setLivestream(16);' href='#'>[ONE]</a></li>
+                    <li><a onclick='return setLivestream(17);' href='#'>[Phoenix]</a></li>
+                    <li><a onclick='return setLivestream(18);' href='#'>[Ran.de 1]</a></li>
+                    <li><a onclick='return setLivestream(19);' href='#'>[Ran.de 2]</a></li>
+                    <li><a onclick='return setLivestream(20);' href='#'>[RBB (Berlin)]</a></li>
+                    <li><a onclick='return setLivestream(21);' href='#'>[RBB (Brandenburg)]</a></li>
+                    <li><a onclick='return setLivestream(22);' href='#'>[SR]</a></li>
+                    <li><a onclick='return setLivestream(23);' href='#'>[SWR (Baden-Wuerttemberg)]</a></li>
+                    <li><a onclick='return setLivestream(24);' href='#'>[SWR (Rheinland-Pflanz)]</a></li>
+                    <li><a onclick='return setLivestream(25);' href='#'>[Tagesschau24]</a></li>
+                    <li><a onclick='return setLivestream(26);' href='#'>[WDR]</a></li>
+                    <li><a onclick='return setLivestream(27);' href='#'>[ZDF]</a></li>
+                    <li><a onclick='return setLivestream(28);' href='#'>[ZDF.info]</a></li>
+                    <li><a onclick='return setLivestream(29);' href='#'>[ZDF.neo]</a></li>
+                    <li><a onclick='return setLivestream(30);' href='#'>[3SAT]</a></li>
                 </ul>
             </div>
         </div>
@@ -65,7 +83,7 @@
     Player state:    <span id="playerstate">IDLE</span>
     Media position:  <span id="progress_tick">00:00:00</span>
     Media duration:  <span id="duration">00:00:00</span>
-    Progress bar:    <input id="progress" type="range" min="1" max="100" value="0.1" step="0.1" onmouseup="seekMedia(this.value);">
+    Progress bar:    <input id="progress" type="range" min="1" max="100" value="0.01" step="0.01" onmouseup="seekMedia(this.value);" style="width:80%;">
     Volume bar:      <input id="volumething" type="range" min="0" max="100" value="100" step="1" onmouseup="setReceiverVolume(this.value/100,false);">
     Volume mute:     <a href="#" id="mutelink" onclick="setReceiverVolume(currentVolume, true); this.style.display = 'none'; document.getElementById('unmutelink').style.display = 'initial'; return false; ">Mute</a><a href="#" style="display:none;" id="unmutelink" onclick="setReceiverVolume(currentVolume, false);this.style.display = 'none';document.getElementById('mutelink').style.display = 'initial';return false; ">Unmute</a>
     Control media:   <a href="#" onclick="playMedia(); return false; " id="playpauseresume" >Play</a></li> <a href="#" onclick="stopMedia(); return false; ">Unload media</a>
