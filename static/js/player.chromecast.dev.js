@@ -33,7 +33,8 @@ function getQueryParams() {
             containedUrlHasParams = true;
         }
 
-        if (reqStrEncUri.indexOf('http%253A%252F%252F') != -1 || reqStrEncUri.indexOf('https%253A%252F%252F') != -1) {
+        if (reqStrEncUri.indexOf('http%253A%252F%252F') != -1 || reqStrEncUri.indexOf(
+                'https%253A%252F%252F') != -1) {
             containedUrlIsEncoded = true;
         }
     }
@@ -41,12 +42,10 @@ function getQueryParams() {
     if (!!containedUrlHasParams) {
         if (containedUrlIsEncoded) {
             params = reqStrEncUri.split('&');
-        }
-        else {
+        } else {
             params = encodeURIComponent(reqStr).split('%26');
         }
-    }
-    else {
+    } else {
         params = reqStrDecUriComp.split('&');
     }
 
@@ -57,14 +56,14 @@ function getQueryParams() {
             var key = decodeURIComponent(d[0]);
             var val = d[1];
 
-            if ('undefined' !== typeof val) {
-            } else {
+            if ('undefined' !== typeof val) {} else {
                 d = param.split('%3D');
                 key = decodeURIComponent(d[0]);
                 val = d[1];
             }
 
-            if (val.indexOf('http%253A%252F%252F') != -1 || val.indexOf('https%253A%252F%252F') != -1) {
+            if (val.indexOf('http%253A%252F%252F') != -1 || val.indexOf('https%253A%252F%252F') !=
+                -1) {
                 val = decodeURIComponent(val);
             }
             val = decodeURIComponent(val);
@@ -274,7 +273,8 @@ function playCustomMedia() {
  * toggle visibility of IPTV channels
  */
 function toggleChannels() {
-    document.getElementById('iptv-list').style.display = ('none' == document.getElementById('iptv-list').style.display) ? 'block' : 'none';
+    document.getElementById('iptv-list').style.display = ('none' == document.getElementById(
+        'iptv-list').style.display) ? 'block' : 'none';
 
     return false;
 }
@@ -284,20 +284,37 @@ function toggleChannels() {
  */
 function setLivestream(streamId) {
     var streamUrls = [
-            'http://live-lh.daserste.de/i/daserste_de@91204/index_2692_av-p.m3u8?b=2692&sd=10&dw=10&rebase=on',         // ARD
-            'http://zdf1314-lh.akamaihd.net/i/de14_v1@392878/index_3056_av-p.m3u8?b=3056&sd=10&dw=10&rebase=on',        // ZDF
-            'http://zdf1314-lh.akamaihd.net/i/de13_v1@392882/index_3056_av-p.m3u8?b=3056&sd=10&dw=10&rebase=on',        // ZDF.neo
-            'http://zdf1112-lh.akamaihd.net/i/de12_v1@392882/index_3056_av-p.m3u8?b=3056&sd=10&dw=10&rebase=on',        // ZDF.info
-            'http://zdf0910-lh.akamaihd.net/i/de09_v1@392871/index_1456_av-b.m3u8?b=1456&sd=10&rd=10&rebase=on',        // Phoenix
-            'http://zdf0910-lh.akamaihd.net/i/dach10_v1@392872/index_1456_av-b.m3u8?b=1456&sd=10&rd=10&rebase=on',      // 3sat
-            'http://wdr_fs_geo-lh.akamaihd.net/i/wdrfs_geogeblockt@112044/index_3776_av-p.m3u8?b=3776&sd=10&rd=10&rebase=on', // WDR
-            'http://ardevent2geo.wdr.de/i/wdrardevent2_geogeblockt@112050/index_3776_av-p.m3u8?sd=10&rebase=on',        // ARD/WDR, Sportschau, event kanal (bundesliga??)
-            'http://emwdr-lh.akamaihd.net/i/em2016_wdr@182638/index_3776_av-p.m3u8?b=3667&sd=10&dw=10&rebase=on',       // ARD/WDR, Sportschau, event kanal (euro 2016)
-            'http://tagesschau-lh.akamaihd.net/i/tagesschau_1@119231/index_3776_av-p.m3u8?sd=10&rebase=on',             // ARD/WDR, Tageschau24, Themen-kanal
-            'http://ndr_fs-lh.akamaihd.net/i/ndrfs_nds@119224/master.m3u8',                                             // NDR
-            'http://delive.artestras.cshls.lldns.net/artestras/delive/delive.m3u8',                                     // Arte
-            'http://ran01de-live.hls.adaptive.level3.net/sevenone/ran01de/wifi2500.m3u8',                               // Sat1, ran.de, event kanal (master.m3u8 = ipad.m3u8)
-            'http://ran03dach-live.hls.adaptive.level3.net/sevenone/ran03dach/wifi2500.m3u8',                           // Sat1, ran.de, event kanal
+            'http://livestreams.br.de/i/bralpha_germany@119899/index_3776_av-p.m3u8?sd=10&rebase=on', // ARD Alpha
+            'https://artelive-lh.akamaihd.net/i/artelive_de@393591/index_1_av-p.m3u8?sd=10&rebase=on', // Arte (DE)
+            'https://artelive-lh.akamaihd.net/i/artelive_fr@344805/index_1_av-p.m3u8?sd=10&rebase=on', // Arte (FR)
+            'http://livestreams.br.de/i/bfsnord_germany@119898/index_3776_av-p.m3u8?sd=10&rebase=on', // BR (Nord)
+            'http://livestreams.br.de/i/bfssued_germany@119890/index_3776_av-p.m3u8?sd=10&rebase=on', // BR (Sued)
+            'http://live-lh.daserste.de/i/daserste_de@91204/index_2692_av-p.m3u8?sd=10&rebase=on', // Das Erste
+            'http://dwstream72-lh.akamaihd.net/i/dwstream72_live@123556/index_1_av-p.m3u8?sd=10&rebase=on', // Deutsche Welle
+            'http://livestream-1.hr.de/i/hr_fernsehen@75910/index_3584_av-p.m3u8?sd=10&rebase=on', // HR
+            'https://kikade-lh.akamaihd.net/i/livetvkika_de@450035/index_3776_av-p.m3u8?sd=10&rebase=on', // KIKA
+            'http://livetvsachsen.mdr.de/i/livetvmdrsachsen_de@106902/index_3871_av-p.m3u8?sd=10&rebase=on', // MDR (Sachsen)
+            'http://livetvsachsenanhalt.mdr.de/i/livetvmdrsachsenanhalt_de@106901/index_3776_av-p.m3u8?sd=10&rebase=on', // MDR (Sachsen-Anhalt)
+            'http://livetvthueringen.mdr.de/i/livetvmdrthueringen_de@106903/index_3776_av-p.m3u8?sd=10&rebase=on', // MDR (Thueringen)
+            'http://ndrfs.ndr.de/i/ndrfs_hh@119223/index_3776_av-p.m3u8?sd=10&rebase=on', // NDR (Hamburg)
+            'http://ndrfs.ndr.de/i/ndrfs_mv@119226/index_3776_av-p.m3u8?sd=10&rebase=on', // NDR (Mecklenburg-Vorpommern)
+            'http://ndrfs.ndr.de/i/ndrfs_nds@119224/index_3776_av-p.m3u8?sd=10&rebase=on', // NDR (Niedersachsen)
+            'http://ndrfs.ndr.de/i/ndrfs_sh@119225/index_3776_av-p.m3u8?sd=10&rebase=on', // NDR (Schleswig-Holstein)
+            'http://onelivestream.wdr.de/i/wdr_einsfestival@328300/index_7_av-p.m3u8?sd=10&rebase=on', // ONE
+            'https://zdf0910-lh.akamaihd.net/i/de09_v1@392871/index_1496_av-p.m3u8?sd=10&rebase=on', // Phoenix
+            'http://ran01de-live.hls.adaptive.level3.net/sevenone/ran01de/wifi2500.m3u8', // Ran.de, event kanal (master.m3u8 = ipad.m3u8)
+            'http://ran03dach-live.hls.adaptive.level3.net/sevenone/ran03dach/wifi2500.m3u8', // Ran.de, event kanal 2 (master.m3u8 = ipad.m3u8)
+            'http://rbblive-lh.akamaihd.net/i/rbb_berlin@144674/index_7_av-p.m3u8?sd=10&rebase=on', // RBB (Berlin)
+            'http://rbblive-lh.akamaihd.net/i/rbb_brandenburg@349369/index_7_av-p.m3u8?sd=10&rebase=on', // RBB (Brandenburg)
+            'http://fs.live.sr.de/i/sr_universal02@107595/index_1662_av-p.m3u8?sd=10&rebase=on', // SR
+            'http://swrbw-lh.akamaihd.net/i/swrbw_live@196738/index_3584_av-p.m3u8?sd=10&rebase=on', // SWR (Baden-Wuerttemberg)
+            'http://swrrp-lh.akamaihd.net/i/swrrp_live@196739/index_3584_av-p.m3u8?sd=10&rebase=on', // SWR (Rheinland-Pfalz)
+            'http://tagesschau-lh.akamaihd.net/i/tagesschau_1@119231/index_3776_av-p.m3u8?sd=10&rebase=on', // Tagesschau24
+            'http://tvstreamgeo.wdr.de/i/wdrfs_geogeblockt@112044/index_3776_av-p.m3u8?sd=10&rebase=on', // WDR
+            'https://zdf1314-lh.akamaihd.net/i/de14_v1@392878/index_3096_av-p.m3u8?sd=10&rebase=on&id=', // ZDF
+            'https://zdf1112-lh.akamaihd.net/i/de12_v1@392882/index_3096_av-p.m3u8?sd=10&rebase=on&id=', // ZDF.info
+            'https://zdf1314-lh.akamaihd.net/i/de13_v1@392877/index_3096_av-p.m3u8?sd=10&rebase=on&id=', // ZDF.neo
+            'https://zdf0910-lh.akamaihd.net/i/dach10_v1@392872/index_1496_av-p.m3u8?sd=10&rebase=on&id=' // 3SAT
         ],
         streamUrl = streamUrls[streamId];
 
@@ -318,6 +335,12 @@ function setStreamUrl(url) {
         guessMimeType(url);
     }
 
+    return;
+}
+
+function setStreamOnPlaylistClick(target) {
+    console.dir(target);
+    setStreamUrl(target.getAttribute('data-url'));
     return false;
 }
 
@@ -336,8 +359,8 @@ function getMediaFilename(url) {
  * /?urls=http://domain.com/video-1.mp4;http://domain.com/video-2.mp4;http://domain.com/video-3.mp4
  */
 function createVideoPlaylist(videos) {
-    var vids = videos.split(';')
-      , urls = [];
+    var vids = videos.split(';'),
+        urls = [];
 
     for (var i, i = 0; i < vids.length; i++) {
         var vid = vids[i];
@@ -354,21 +377,66 @@ function createVideoPlaylist(videos) {
         document.getElementById('playlist-wrapper').style.display = 'block';
 
         for (var i, i = 0; i < urls.length; i++) {
-            var url = urls[i]
-              , itemElem = document.createElement('li')
-              , linkElem = document.createElement('a');
+            var url = urls[i],
+                itemElem = document.createElement('li'),
+                linkElem = document.createElement('a'),
+                copyLink = document.createElement('a');
 
             linkElem.textContent = getMediaFilename(url);
             linkElem.href = '#';
             linkElem.className = 'playlist-item';
-            linkElem.setAttribute('data-url', url);
+            linkElem.setAttribute('data-url', url.replace('storage.google',
+                'storage-download.google'));
+            linkElem.setAttribute('onclick', "setStreamOnPlaylistClick(this);");
             linkElem.addEventListener('click', function(e) {
+                console.dir(
+                    'linkElem.evtHandler.onClick: starting user-defined evt handling..'
+                );
+                console.dir(e);
                 e.preventDefault();
+                console.dir('linkElem.evtHandler.onClick: preventing default action..');
+                console.dir(e);
+                e.stopPropagation();
+                console.dir(
+                    'linkElem.evtHandler.onClick: stopping further propagation of this event..'
+                );
+                console.dir(e);
+
+                console.dir('linkElem.evtHandler.onClick: now calling custom action..');
                 setStreamUrl(this.getAttribute('data-url'));
+                console.dir('linkElem.evtHandler.onClick: called stopPropagation()');
+                console.dir(e);
+
                 return false;
             });
+            /*linkElem.onclick = function(e) {
+                e.preventDefault();
+                alert(this.getAttribute('data-url'));
+            };*/
+
+            copyLink.className = 'browser-link';
+            copyLink.href = String([
+                window.location.protocol + '//',
+                window.location.hostname,
+                window.location.pathname, ("player.html?fullscreen=1&video=" + url.replace(
+                    "?_=1", ""))
+            ].join(""));
+            copyLink.target = '_blank';
+            copyLink.textContent = "[Play in browser]";
+            /*copyLink.addEventListener('click', function(e) {
+                console.dir(
+                    'linkElem.evtHandler.onClick: starting user-defined evt handling..'
+                );
+                console.dir(e);
+                e.stopImmediatePropagation();
+                //e.preventDefault();
+                //alert('abc');
+                return false;
+            });*/
 
             itemElem.appendChild(linkElem);
+            itemElem.innerHTML += "<br> <span> - </span>";
+            itemElem.appendChild(copyLink);
             playlistElem.appendChild(itemElem);
         }
     }
@@ -381,26 +449,26 @@ function createVideoPlaylist(videos) {
  */
 function setPlaylistCurrentItem(active) {
     //if (!!currentPlaylist && !!currentPlaylistItem) {
-        var a = document.querySelectorAll('.playlist-item');
+    var a = document.querySelectorAll('.playlist-item');
 
-        for (var i, i = 0; i < a.length; i++) {
-            var item = a[i]
-              , itemUrl = item.getAttribute('data-url')
-              , li = item.parentNode;
+    for (var i, i = 0; i < a.length; i++) {
+        var item = a[i],
+            itemUrl = item.getAttribute('data-url'),
+            li = item.parentNode;
 
-            if (!active && li.childNodes.length == 2) {
-                li.removeChild(li.childNodes[1]);
-            }
-            else {
-                if (!!session && !!session.media[0] && itemUrl == session.media[0].media.contentId && -1 == li.innerHTML.indexOf('[CURRENTLY PLAYING]')) {
-                    var info = document.createElement('code');
-                    info.textContent = ' [CURRENTLY PLAYING]';
-                    li.appendChild(info);
-                    currentPlaylistItem = i;
-                    break;
-                }
+        if (!active && li.childNodes.length == 2) {
+            li.removeChild(li.childNodes[1]);
+        } else {
+            if (!!session && !!session.media[0] && itemUrl == session.media[0].media.contentId && -
+                1 == li.innerHTML.indexOf('[CURRENTLY PLAYING]')) {
+                var info = document.createElement('code');
+                info.textContent = ' [CURRENTLY PLAYING]';
+                li.appendChild(info);
+                currentPlaylistItem = i;
+                //break;
             }
         }
+    }
     //}
 
     return;
@@ -410,9 +478,21 @@ function setPlaylistCurrentItem(active) {
  * check whether the given string represents a supported media URL
  */
 function isMediaUrl(str) {
-    return ((str.indexOf('http://') != -1 || str.indexOf('https://') != -1)
-        && (str.indexOf('.mp4') != -1 || str.indexOf('.mkv') != -1 || str.indexOf('.m3u8') != -1 || str.indexOf('.mp3') != -1))
-        ? true : false;
+    return ((str.indexOf('http://') != -1 || str.indexOf('https://') != -1) && (str.indexOf('.mp4') !=
+        -1 || str.indexOf('.mkv') != -1 || str.indexOf('.m3u8') != -1 || str.indexOf('.mp3') !=
+        -1)) ? true : false;
+}
+
+function reduceArrayByObjectKey(arr, key) {
+    return arr.reduce(function(accumulator, currentValue) {
+        for (var e = 0, i = 0; i < accumulator.length; i++) {
+            if (accumulator[i][key] == currentValue[key]) {
+                e = 1;
+                break;
+            }
+        }!!e || accumulator.push(currentValue);
+        return accumulator;
+    }, []);
 }
 
 /**
@@ -437,11 +517,9 @@ function toHHMMSS(secs) {
 function guessMimeType(str) {
     if (str.indexOf('.mp3') != -1) {
         document.getElementById('mediaMimeType').selectedIndex = 2;
-    }
-    else if (str.indexOf('.mp4') != -1 || str.indexOf('.mkv') != -1) {
+    } else if (str.indexOf('.mp4') != -1 || str.indexOf('.mkv') != -1) {
         document.getElementById('mediaMimeType').selectedIndex = 1;
-    }
-    else if (str.indexOf('.m3u8') != -1) {
+    } else if (str.indexOf('.m3u8') != -1) {
         document.getElementById('mediaMimeType').selectedIndex = 0;
     }
 }
@@ -454,14 +532,11 @@ function guessMimeType(str) {
 function guessMimeTypeStr(str) {
     if (!str || !str.length) {
         return false;
-    }
-    else if (str.indexOf('.mp3') != -1) {
+    } else if (str.indexOf('.mp3') != -1) {
         return 'audio/mpeg';
-    }
-    else if (str.indexOf('.mp4') != -1 || str.indexOf('.mkv') != -1) {
+    } else if (str.indexOf('.mp4') != -1 || str.indexOf('.mkv') != -1) {
         return 'video/mp4';
-    }
-    else if (str.indexOf('.m3u8') != -1) {
+    } else if (str.indexOf('.m3u8') != -1) {
         return 'application/vnd.apple.mpegurl';
     }
 }
@@ -528,6 +603,7 @@ function onMediaDiscovered(how, media) {
     currentMedia.addUpdateListener(onMediaStatusUpdate);
     currentMediaTime = currentMedia.currentTime;
     playpauseresume.innerHTML = 'Play';
+    setPlaylistCurrentItem(false);
     //document.getElementById("casticon").src = 'images/cast_icon_active.png';
 
     if (!timer) {
@@ -565,8 +641,7 @@ function loadSessionVolume() {
     if (!!session && !!session.receiver.volume.level) {
         currentVolume = session.receiver.volume.level;
         document.getElementById('volumething').value = session.receiver.volume.level * 100;
-    }
-    else {
+    } else {
         currentVolume = 1;
         document.getElementById('volumething').value = 100;
     }
@@ -575,7 +650,8 @@ function loadSessionVolume() {
 setInterval(function() {
     var playpauseresume = document.getElementById("playpauseresume");
 
-    if (!!currentMedia && currentMedia.playerState == "PLAYING" && playpauseresume.innerHTML == 'Play') {
+    if (!!currentMedia && currentMedia.playerState == "PLAYING" && playpauseresume.innerHTML ==
+        'Play') {
         playMedia();
     };
 }, 1000);
@@ -589,8 +665,8 @@ function updateCurrentTime() {
     }
 
     if (currentMedia.media && currentMedia.media.duration != null) {
-        var cTime = currentMedia.getEstimatedTime()
-          , cProgress = (100 * cTime / currentMedia.media.duration).toFixed(2);
+        var cTime = currentMedia.getEstimatedTime(),
+            cProgress = (100 * cTime / currentMedia.media.duration).toFixed(2);
 
         document.getElementById("progress").value = cProgress;
         document.getElementById("progress_tick").innerHTML = toHHMMSS(cTime);
@@ -684,7 +760,8 @@ function stopMedia() {
         clearInterval(timer);
     }
 
-    if (null != currentPlaylist && 0 < currentPlaylist.length && currentPlaylistItem < (currentPlaylist.length - 1)) {
+    if (null != currentPlaylist && 0 < currentPlaylist.length && currentPlaylistItem < (
+            currentPlaylist.length - 1)) {
         setPlaylistCurrentItem(false);
         var nextUrl = currentPlaylist[currentPlaylistItem + 1];
         loadMediaPwnt(nextUrl, guessMimeTypeStr(nextUrl));
