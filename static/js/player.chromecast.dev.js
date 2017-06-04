@@ -11,6 +11,10 @@ var timer = null,
     currentPlaylist = null,
     currentPlaylistItem = null;
 
+/**
+ * Helper function to get the request URI's query parameters
+ * @return {object} Empty object or key-value map of query params.
+ */
 function getQueryParams() {
     var reqStr = window.location.search.substring(1);
 
@@ -33,7 +37,8 @@ function getQueryParams() {
             containedUrlHasParams = true;
         }
 
-        if (reqStrEncUri.indexOf('http%253A%252F%252F') != -1 || reqStrEncUri.indexOf('https%253A%252F%252F') != -1) {
+        if (reqStrEncUri.indexOf('http%253A%252F%252F') != -1 || reqStrEncUri.indexOf(
+                'https%253A%252F%252F') != -1) {
             containedUrlIsEncoded = true;
         }
     }
@@ -41,12 +46,10 @@ function getQueryParams() {
     if (!!containedUrlHasParams) {
         if (containedUrlIsEncoded) {
             params = reqStrEncUri.split('&');
-        }
-        else {
+        } else {
             params = encodeURIComponent(reqStr).split('%26');
         }
-    }
-    else {
+    } else {
         params = reqStrDecUriComp.split('&');
     }
 
@@ -57,14 +60,14 @@ function getQueryParams() {
             var key = decodeURIComponent(d[0]);
             var val = d[1];
 
-            if ('undefined' !== typeof val) {
-            } else {
+            if ('undefined' !== typeof val) {} else {
                 d = param.split('%3D');
                 key = decodeURIComponent(d[0]);
                 val = d[1];
             }
 
-            if (val.indexOf('http%253A%252F%252F') != -1 || val.indexOf('https%253A%252F%252F') != -1) {
+            if (val.indexOf('http%253A%252F%252F') != -1 || val.indexOf('https%253A%252F%252F') !=
+                -1) {
                 val = decodeURIComponent(val);
             }
             val = decodeURIComponent(val);
@@ -92,7 +95,8 @@ if (!chrome.cast || !chrome.cast.isAvailable) {
 }
 
 /**
- * initialization
+ * Cast API init function
+ * @return {void}
  */
 function initializeCastApi() {
     // default app ID to the default media receiver app
@@ -105,28 +109,32 @@ function initializeCastApi() {
 };
 
 /**
- * initialization success callback
+ * Initialization success callback function
+ * @return {void}
  */
 function onInitSuccess() {
     console.log("init success");
 }
 
 /**
- * initialization error callback
+ * Initialization error callback function
+ * @return {void}
  */
 function onError() {
     console.log("error");
 }
 
 /**
- * generic success callback
+ * Generic success callback function
+ * @return {void}
  */
 function onSuccess(message) {
     console.log(message);
 }
 
 /**
- * callback on success for stopping app
+ * Success callback function for stopping cast session
+ * @return {void}
  */
 function onStopAppSuccess() {
     console.log('Session stopped');
@@ -135,7 +143,8 @@ function onStopAppSuccess() {
 }
 
 /**
- * session listener during initialization
+ * Helper function to add global session listener during initialization
+ * @return {void}
  */
 function sessionListener(e) {
     session = e;
@@ -154,7 +163,8 @@ function sessionListener(e) {
 }
 
 /**
- * session update listener
+ * Helper function to update session listeners
+ * @return {void}
  */
 function sessionUpdateListener(isAlive) {
     var message = isAlive ? 'Session Updated' : 'Session Removed';
@@ -178,7 +188,8 @@ function sessionUpdateListener(isAlive) {
 };
 
 /**
- * receiver listener during initialization
+ * Receiver listener helper function
+ * @return {void}
  */
 function receiverListener(e) {
     if (e === 'available') {
@@ -189,17 +200,19 @@ function receiverListener(e) {
 }
 
 /**
- * enter a media URL
- * @param {string} m An media URL
+ * Set current media URL
+ * @param {Object} mediaUrl Object with media info
+ * @return {void}
  */
-function setMyMediaURL(e) {
-    if (!!e.value) {
-        currentMediaURL = e.value;
+function setMyMediaURL(mediaUrl) {
+    if (!!mediaUrl.value) {
+        currentMediaURL = mediaUrl.value;
     }
 }
 
 /**
- * launch app and request session
+ * Helper function to launch the app / request a session
+ * @return {void}
  */
 function launchApp() {
     console.log("launching app...");
@@ -211,8 +224,21 @@ function launchApp() {
 }
 
 /**
- * callback on success for requestSession call
- * @param {Object} e A non-null new session.
+ * Helper function to stop the app / exit the session
+ * @return {void}
+ */
+function stopApp() {
+    session.stop(onStopAppSuccess, onError);
+
+    if (!!timer) {
+        clearInterval(timer);
+    }
+}
+
+/**
+ * Success callback function for new session requests
+ * @param {Object} e A non-null new session object.
+ * @return {void}
  */
 function onRequestSessionSuccess(e) {
     console.log("session success: " + e.sessionId);
@@ -230,25 +256,16 @@ function onRequestSessionSuccess(e) {
 }
 
 /**
- * callback on launch error
+ * Error callback function for app launches
+ * @return {void}
  */
 function onLaunchError() {
     console.log("launch error");
 }
 
 /**
- * stop app/session
- */
-function stopApp() {
-    session.stop(onStopAppSuccess, onError);
-
-    if (!!timer) {
-        clearInterval(timer);
-    }
-}
-
-/**
- * load media specified by custom URL
+ * Helper function to load a file, specified via the custom media URL input field
+ * @return {void}
  */
 function loadCustomMedia() {
     var customMediaURL = document.getElementById('networkStreamUrl').value,
@@ -260,7 +277,8 @@ function loadCustomMedia() {
 }
 
 /**
- * load media specified by custom URL
+ * Helper function to open a file, specified via the custom media URL input field, in the browser
+ * @return {void}
  */
 function playCustomMedia() {
     var customMediaURL = document.getElementById('networkStreamUrl').value;
@@ -271,33 +289,54 @@ function playCustomMedia() {
 }
 
 /**
- * toggle visibility of IPTV channels
+ * Helper function to toggle visibility of IPTV channels
+ * @return {Boolean} Returns false
  */
 function toggleChannels() {
-    document.getElementById('iptv-list').style.display = ('none' == document.getElementById('iptv-list').style.display) ? 'block' : 'none';
+    document.getElementById('iptv-list').style.display = ('none' == document.getElementById(
+        'iptv-list').style.display) ? 'block' : 'none';
 
     return false;
 }
 
 /**
- * load predefined live stream URL
+ * Helper function to set the custom media URL input field value to a predefined IPTV live stream
+ * @param {Number} streamId Any number between 0 and 30
+ * @return {Boolean} Returns false
  */
 function setLivestream(streamId) {
     var streamUrls = [
-            'http://live-lh.daserste.de/i/daserste_de@91204/index_2692_av-p.m3u8?b=2692&sd=10&dw=10&rebase=on',         // ARD
-            'http://zdf1314-lh.akamaihd.net/i/de14_v1@392878/index_3056_av-p.m3u8?b=3056&sd=10&dw=10&rebase=on',        // ZDF
-            'http://zdf1314-lh.akamaihd.net/i/de13_v1@392882/index_3056_av-p.m3u8?b=3056&sd=10&dw=10&rebase=on',        // ZDF.neo
-            'http://zdf1112-lh.akamaihd.net/i/de12_v1@392882/index_3056_av-p.m3u8?b=3056&sd=10&dw=10&rebase=on',        // ZDF.info
-            'http://zdf0910-lh.akamaihd.net/i/de09_v1@392871/index_1456_av-b.m3u8?b=1456&sd=10&rd=10&rebase=on',        // Phoenix
-            'http://zdf0910-lh.akamaihd.net/i/dach10_v1@392872/index_1456_av-b.m3u8?b=1456&sd=10&rd=10&rebase=on',      // 3sat
-            'http://wdr_fs_geo-lh.akamaihd.net/i/wdrfs_geogeblockt@112044/index_3776_av-p.m3u8?b=3776&sd=10&rd=10&rebase=on', // WDR
-            'http://ardevent2geo.wdr.de/i/wdrardevent2_geogeblockt@112050/index_3776_av-p.m3u8?sd=10&rebase=on',        // ARD/WDR, Sportschau, event kanal (bundesliga??)
-            'http://emwdr-lh.akamaihd.net/i/em2016_wdr@182638/index_3776_av-p.m3u8?b=3667&sd=10&dw=10&rebase=on',       // ARD/WDR, Sportschau, event kanal (euro 2016)
-            'http://tagesschau-lh.akamaihd.net/i/tagesschau_1@119231/index_3776_av-p.m3u8?sd=10&rebase=on',             // ARD/WDR, Tageschau24, Themen-kanal
-            'http://ndr_fs-lh.akamaihd.net/i/ndrfs_nds@119224/master.m3u8',                                             // NDR
-            'http://delive.artestras.cshls.lldns.net/artestras/delive/delive.m3u8',                                     // Arte
-            'http://ran01de-live.hls.adaptive.level3.net/sevenone/ran01de/wifi2500.m3u8',                               // Sat1, ran.de, event kanal (master.m3u8 = ipad.m3u8)
-            'http://ran03dach-live.hls.adaptive.level3.net/sevenone/ran03dach/wifi2500.m3u8',                           // Sat1, ran.de, event kanal
+            'http://livestreams.br.de/i/bralpha_germany@119899/index_3776_av-p.m3u8?sd=10&rebase=on', // ARD Alpha
+            'https://artelive-lh.akamaihd.net/i/artelive_de@393591/index_1_av-p.m3u8?sd=10&rebase=on', // Arte (DE)
+            'https://artelive-lh.akamaihd.net/i/artelive_fr@344805/index_1_av-p.m3u8?sd=10&rebase=on', // Arte (FR)
+            'http://livestreams.br.de/i/bfsnord_germany@119898/index_3776_av-p.m3u8?sd=10&rebase=on', // BR (Nord)
+            'http://livestreams.br.de/i/bfssued_germany@119890/index_3776_av-p.m3u8?sd=10&rebase=on', // BR (Sued)
+            'http://live-lh.daserste.de/i/daserste_de@91204/index_2692_av-p.m3u8?sd=10&rebase=on', // Das Erste
+            'http://dwstream72-lh.akamaihd.net/i/dwstream72_live@123556/index_1_av-p.m3u8?sd=10&rebase=on', // Deutsche Welle
+            'http://livestream-1.hr.de/i/hr_fernsehen@75910/index_3584_av-p.m3u8?sd=10&rebase=on', // HR
+            'https://kikade-lh.akamaihd.net/i/livetvkika_de@450035/index_3776_av-p.m3u8?sd=10&rebase=on', // KIKA
+            'http://livetvsachsen.mdr.de/i/livetvmdrsachsen_de@106902/index_3871_av-p.m3u8?sd=10&rebase=on', // MDR (Sachsen)
+            'http://livetvsachsenanhalt.mdr.de/i/livetvmdrsachsenanhalt_de@106901/index_3776_av-p.m3u8?sd=10&rebase=on', // MDR (Sachsen-Anhalt)
+            'http://livetvthueringen.mdr.de/i/livetvmdrthueringen_de@106903/index_3776_av-p.m3u8?sd=10&rebase=on', // MDR (Thueringen)
+            'http://ndrfs.ndr.de/i/ndrfs_hh@119223/index_3776_av-p.m3u8?sd=10&rebase=on', // NDR (Hamburg)
+            'http://ndrfs.ndr.de/i/ndrfs_mv@119226/index_3776_av-p.m3u8?sd=10&rebase=on', // NDR (Mecklenburg-Vorpommern)
+            'http://ndrfs.ndr.de/i/ndrfs_nds@119224/index_3776_av-p.m3u8?sd=10&rebase=on', // NDR (Niedersachsen)
+            'http://ndrfs.ndr.de/i/ndrfs_sh@119225/index_3776_av-p.m3u8?sd=10&rebase=on', // NDR (Schleswig-Holstein)
+            'http://onelivestream.wdr.de/i/wdr_einsfestival@328300/index_7_av-p.m3u8?sd=10&rebase=on', // ONE
+            'https://zdf0910-lh.akamaihd.net/i/de09_v1@392871/index_1496_av-p.m3u8?sd=10&rebase=on', // Phoenix
+            'http://ran01de-live.hls.adaptive.level3.net/sevenone/ran01de/wifi2500.m3u8', // Ran.de, event kanal (master.m3u8 = ipad.m3u8)
+            'http://ran03dach-live.hls.adaptive.level3.net/sevenone/ran03dach/wifi2500.m3u8', // Ran.de, event kanal 2 (master.m3u8 = ipad.m3u8)
+            'http://rbblive-lh.akamaihd.net/i/rbb_berlin@144674/index_7_av-p.m3u8?sd=10&rebase=on', // RBB (Berlin)
+            'http://rbblive-lh.akamaihd.net/i/rbb_brandenburg@349369/index_7_av-p.m3u8?sd=10&rebase=on', // RBB (Brandenburg)
+            'http://fs.live.sr.de/i/sr_universal02@107595/index_1662_av-p.m3u8?sd=10&rebase=on', // SR
+            'http://swrbw-lh.akamaihd.net/i/swrbw_live@196738/index_3584_av-p.m3u8?sd=10&rebase=on', // SWR (Baden-Wuerttemberg)
+            'http://swrrp-lh.akamaihd.net/i/swrrp_live@196739/index_3584_av-p.m3u8?sd=10&rebase=on', // SWR (Rheinland-Pfalz)
+            'http://tagesschau-lh.akamaihd.net/i/tagesschau_1@119231/index_3776_av-p.m3u8?sd=10&rebase=on', // Tagesschau24
+            'http://tvstreamgeo.wdr.de/i/wdrfs_geogeblockt@112044/index_3776_av-p.m3u8?sd=10&rebase=on', // WDR
+            'https://zdf1314-lh.akamaihd.net/i/de14_v1@392878/index_3096_av-p.m3u8?sd=10&rebase=on&id=', // ZDF
+            'https://zdf1112-lh.akamaihd.net/i/de12_v1@392882/index_3096_av-p.m3u8?sd=10&rebase=on&id=', // ZDF.info
+            'https://zdf1314-lh.akamaihd.net/i/de13_v1@392877/index_3096_av-p.m3u8?sd=10&rebase=on&id=', // ZDF.neo
+            'https://zdf0910-lh.akamaihd.net/i/dach10_v1@392872/index_1496_av-p.m3u8?sd=10&rebase=on&id=' // 3SAT
         ],
         streamUrl = streamUrls[streamId];
 
@@ -309,8 +348,10 @@ function setLivestream(streamId) {
 }
 
 /**
- * set the value of the media URL's input field to the given string value
- * also, set the appropriated mime type for the given media file
+ * Helper function to set the custom media URL input field value to the given string value
+ * and guess & set the appropriated mime type for the given media file
+ * @param {string} url A URL string
+ * @return {void}
  */
 function setStreamUrl(url) {
     if (!!url) {
@@ -318,11 +359,25 @@ function setStreamUrl(url) {
         guessMimeType(url);
     }
 
+    return;
+}
+
+/**
+ * Helper function to set the custom media URL input field value to a playlist URL
+ * @param {Object} target A DOMObject playlist item
+ * @return {Boolean} Returns false
+ */
+function setStreamOnPlaylistClick(target) {
+    console.dir(target);
+    setStreamUrl(target.getAttribute('data-url'));
+
     return false;
 }
 
 /**
- * get the filename segment from a URL
+ * Helper function to get the filename segment from a URL
+ * @param {string} url A URL string
+ * @return {string} The media filename
  */
 function getMediaFilename(url) {
     var arr = url.split('/')
@@ -331,13 +386,15 @@ function getMediaFilename(url) {
 }
 
 /**
- * create a playlist from URL request parameter 'urls'
- * parameter value is expected to be a list of media URLs, separated by ';' - e.g.:
- * /?urls=http://domain.com/video-1.mp4;http://domain.com/video-2.mp4;http://domain.com/video-3.mp4
+ * Helper function to create a playlist from the request URI's query parameter 'urls'
+ * (Value is expected to be a list of media URLs, separated by semicolon (';') - e.g.:
+ * /?urls=http://domain.com/video-1.mp4;http://domain.com/video-2.mp4;http://domain.com/video-3.mp4)
+ * @param {string} videos A semicolon-separated list of media URLs
+ * @return {void}
  */
 function createVideoPlaylist(videos) {
-    var vids = videos.split(';')
-      , urls = [];
+    var vids = videos.split(';'),
+        urls = [];
 
     for (var i, i = 0; i < vids.length; i++) {
         var vid = vids[i];
@@ -354,21 +411,52 @@ function createVideoPlaylist(videos) {
         document.getElementById('playlist-wrapper').style.display = 'block';
 
         for (var i, i = 0; i < urls.length; i++) {
-            var url = urls[i]
-              , itemElem = document.createElement('li')
-              , linkElem = document.createElement('a');
+            var url = urls[i],
+                itemElem = document.createElement('li'),
+                linkElem = document.createElement('a'),
+                copyLink = document.createElement('a');
 
             linkElem.textContent = getMediaFilename(url);
             linkElem.href = '#';
             linkElem.className = 'playlist-item';
-            linkElem.setAttribute('data-url', url);
+            linkElem.setAttribute('data-url', url.replace('storage.google',
+                'storage-download.google'));
+            linkElem.setAttribute('onclick', "setStreamOnPlaylistClick(this);");
             linkElem.addEventListener('click', function(e) {
+                console.dir(
+                    'linkElem.evtHandler.onClick: starting user-defined evt handling..'
+                );
+                console.dir(e);
                 e.preventDefault();
+                console.dir('linkElem.evtHandler.onClick: preventing default action..');
+                console.dir(e);
+                e.stopPropagation();
+                console.dir(
+                    'linkElem.evtHandler.onClick: stopping further propagation of this event..'
+                );
+                console.dir(e);
+
+                console.dir('linkElem.evtHandler.onClick: now calling custom action..');
                 setStreamUrl(this.getAttribute('data-url'));
+                console.dir('linkElem.evtHandler.onClick: called stopPropagation()');
+                console.dir(e);
+
                 return false;
             });
 
+            copyLink.className = 'browser-link';
+            copyLink.href = String([
+                window.location.protocol + '//',
+                window.location.hostname,
+                window.location.pathname, ("player.html?fullscreen=1&video=" + url.replace(
+                    "?_=1", ""))
+            ].join(""));
+            copyLink.target = '_blank';
+            copyLink.textContent = "[Play in browser]";
+
             itemElem.appendChild(linkElem);
+            itemElem.innerHTML += "<br> <span> - </span>";
+            itemElem.appendChild(copyLink);
             playlistElem.appendChild(itemElem);
         }
     }
@@ -377,47 +465,73 @@ function createVideoPlaylist(videos) {
 }
 
 /**
- * if defined, highlight current playlist item
+ * Helper function to highlight current playlist item (add '[CURRENTLY PLAYING]' flag)
+ * @param {Boolean} active Whether the media object is the current active item from a playlist
+ * @return {void}
  */
 function setPlaylistCurrentItem(active) {
     //if (!!currentPlaylist && !!currentPlaylistItem) {
-        var a = document.querySelectorAll('.playlist-item');
+    var a = document.querySelectorAll('.playlist-item');
 
-        for (var i, i = 0; i < a.length; i++) {
-            var item = a[i]
-              , itemUrl = item.getAttribute('data-url')
-              , li = item.parentNode;
+    for (var i, i = 0; i < a.length; i++) {
+        var item = a[i],
+            itemUrl = item.getAttribute('data-url'),
+            li = item.parentNode;
 
-            if (!active && li.childNodes.length == 2) {
-                li.removeChild(li.childNodes[1]);
-            }
-            else {
-                if (!!session && !!session.media[0] && itemUrl == session.media[0].media.contentId && -1 == li.innerHTML.indexOf('[CURRENTLY PLAYING]')) {
-                    var info = document.createElement('code');
-                    info.textContent = ' [CURRENTLY PLAYING]';
-                    li.appendChild(info);
-                    currentPlaylistItem = i;
-                    break;
-                }
+        if (!active && li.childNodes.length == 2) {
+            li.removeChild(li.childNodes[1]);
+        } else {
+            if (!!session && !!session.media[0] && itemUrl == session.media[0].media.contentId && -
+                1 == li.innerHTML.indexOf('[CURRENTLY PLAYING]')) {
+                var info = document.createElement('code');
+                info.textContent = ' [CURRENTLY PLAYING]';
+                li.appendChild(info);
+                currentPlaylistItem = i;
+                //break;
             }
         }
+    }
     //}
 
     return;
 }
 
 /**
- * check whether the given string represents a supported media URL
+ * Helper function to check whether the given string represents a supported media URL
+ * (Supported files are: mp3, mp4, mkv, m3u8)
+ * @param {string} url A URTL string
+ * @return {Boolean}
  */
-function isMediaUrl(str) {
-    return ((str.indexOf('http://') != -1 || str.indexOf('https://') != -1)
-        && (str.indexOf('.mp4') != -1 || str.indexOf('.mkv') != -1 || str.indexOf('.m3u8') != -1 || str.indexOf('.mp3') != -1))
-        ? true : false;
+function isMediaUrl(url) {
+    return ((url.indexOf('http://') != -1 || url.indexOf('https://') != -1) && (url.indexOf('.mp4') !=
+        -1 || url.indexOf('.mkv') != -1 || url.indexOf('.m3u8') != -1 || url.indexOf('.mp3') !=
+        -1)) ? true : false;
+}
+
+
+/**
+ * Helper function to remove an item from an array
+ * @param {Array} arr An array
+ * @param {string} key The array index to be removed
+ * @return {Array} The reduced array
+ */
+function reduceArrayByObjectKey(arr, key) {
+    return arr.reduce(function(accumulator, currentValue) {
+        for (var e = 0, i = 0; i < accumulator.length; i++) {
+            if (accumulator[i][key] == currentValue[key]) {
+                e = 1;
+                break;
+            }
+        }!!e || accumulator.push(currentValue);
+        return accumulator;
+    }, []);
 }
 
 /**
- * convert seconds to human-readable format HH:mm:ss - e.g.:
+ * Helper function to convert seconds to human-readable format HH:mm:ss - e.g.:
  * console.log(toHHMMSS(123)) // -> '00:02:03'
+ * @param {string} secs Number of seconds as string
+ * @return {string} Formatted duration string
  */
 function toHHMMSS(secs) {
     function pad(str) {
@@ -433,15 +547,15 @@ function toHHMMSS(secs) {
  * if the given string represents a supported media URL,
  * set the input field for the mime type to match the media type
  * (required for casting)
+ * @param {string} url A media URL string
+ * @return {void}
  */
-function guessMimeType(str) {
-    if (str.indexOf('.mp3') != -1) {
+function guessMimeType(url) {
+    if (url.indexOf('.mp3') != -1) {
         document.getElementById('mediaMimeType').selectedIndex = 2;
-    }
-    else if (str.indexOf('.mp4') != -1 || str.indexOf('.mkv') != -1) {
+    } else if (url.indexOf('.mp4') != -1 || url.indexOf('.mkv') != -1) {
         document.getElementById('mediaMimeType').selectedIndex = 1;
-    }
-    else if (str.indexOf('.m3u8') != -1) {
+    } else if (url.indexOf('.m3u8') != -1) {
         document.getElementById('mediaMimeType').selectedIndex = 0;
     }
 }
@@ -450,25 +564,25 @@ function guessMimeType(str) {
  * if the given string represents a supported media URL,
  * set the input field for the mime type to match the media type
  * (required for casting)
+ * @param {string} url A media URL string
+ * @return {string} The guessed mime type
  */
-function guessMimeTypeStr(str) {
-    if (!str || !str.length) {
+function guessMimeTypeStr(url) {
+    if (!url || !url.length) {
         return false;
-    }
-    else if (str.indexOf('.mp3') != -1) {
+    } else if (url.indexOf('.mp3') != -1) {
         return 'audio/mpeg';
-    }
-    else if (str.indexOf('.mp4') != -1 || str.indexOf('.mkv') != -1) {
+    } else if (url.indexOf('.mp4') != -1 || url.indexOf('.mkv') != -1) {
         return 'video/mp4';
-    }
-    else if (str.indexOf('.m3u8') != -1) {
+    } else if (url.indexOf('.m3u8') != -1) {
         return 'application/vnd.apple.mpegurl';
     }
 }
 
 /**
- * load media
- * @param {string} i An index for media
+ * Helper function to load a media URL
+ * @param {string} mediaURL The media url to cast
+ * @return {void}
  */
 function loadMedia(mediaURL) {
     if (!session) {
@@ -489,12 +603,13 @@ function loadMedia(mediaURL) {
     request.currentTime = 0;
 
     session.loadMedia(request, onMediaDiscovered.bind(this, 'loadMedia'), onMediaError);
-
 }
 
 /**
- * load media
- * @param {string} i An index for media
+ * Helper function to *really* load a media URL
+ * @param {string} mediaURL A media URL string
+ * @param {string} mediaType The media's mime type
+ * @return {void}
  */
 function loadMediaPwnt(mediaURL, mediaType) {
     if (!session) {
@@ -520,6 +635,7 @@ function loadMediaPwnt(mediaURL, mediaType) {
 /**
  * callback on success for loading media
  * @param {Object} e A non-null media object
+ * @return {void}
  */
 function onMediaDiscovered(how, media) {
     console.log("new media session ID:" + media.mediaSessionId);
@@ -528,6 +644,7 @@ function onMediaDiscovered(how, media) {
     currentMedia.addUpdateListener(onMediaStatusUpdate);
     currentMediaTime = currentMedia.currentTime;
     playpauseresume.innerHTML = 'Play';
+    setPlaylistCurrentItem(false);
     //document.getElementById("casticon").src = 'images/cast_icon_active.png';
 
     if (!timer) {
@@ -539,6 +656,7 @@ function onMediaDiscovered(how, media) {
 /**
  * callback on media loading error
  * @param {Object} e A non-null media object
+ * @return {void}
  */
 function onMediaError(e) {
     console.log("media error");
@@ -549,6 +667,7 @@ function onMediaError(e) {
 /**
  * callback for media status event
  * @param {Object} e A non-null media object
+ * @return {void}
  */
 function onMediaStatusUpdate(isAlive) {
     if (progressFlag) {
@@ -561,12 +680,15 @@ function onMediaStatusUpdate(isAlive) {
     document.getElementById("playerstate").innerHTML = currentMedia.playerState;
 }
 
+/**
+ * Helper function to load the session volume info
+ * @return {void}
+ */
 function loadSessionVolume() {
     if (!!session && !!session.receiver.volume.level) {
         currentVolume = session.receiver.volume.level;
         document.getElementById('volumething').value = session.receiver.volume.level * 100;
-    }
-    else {
+    } else {
         currentVolume = 1;
         document.getElementById('volumething').value = 100;
     }
@@ -575,13 +697,15 @@ function loadSessionVolume() {
 setInterval(function() {
     var playpauseresume = document.getElementById("playpauseresume");
 
-    if (!!currentMedia && currentMedia.playerState == "PLAYING" && playpauseresume.innerHTML == 'Play') {
+    if (!!currentMedia && currentMedia.playerState == "PLAYING" && playpauseresume.innerHTML ==
+        'Play') {
         playMedia();
     };
 }, 1000);
 
 /**
- * Updates the progress bar shown for each media item.
+ * Helper function to update the progress bar for the playing media file
+ * @return {void}
  */
 function updateCurrentTime() {
     if (!session || !currentMedia) {
@@ -589,8 +713,8 @@ function updateCurrentTime() {
     }
 
     if (currentMedia.media && currentMedia.media.duration != null) {
-        var cTime = currentMedia.getEstimatedTime()
-          , cProgress = (100 * cTime / currentMedia.media.duration).toFixed(2);
+        var cTime = currentMedia.getEstimatedTime(),
+            cProgress = (100 * cTime / currentMedia.media.duration).toFixed(2);
 
         document.getElementById("progress").value = cProgress;
         document.getElementById("progress_tick").innerHTML = toHHMMSS(cTime);
@@ -610,7 +734,8 @@ function updateCurrentTime() {
 };
 
 /**
- * play media
+ * Helper function to start playing a media file
+ * @return {void}
  */
 function playMedia() {
     if (!currentMedia) {
@@ -661,7 +786,8 @@ function playMedia() {
 }
 
 /**
- * stop media
+ * Helper function to stop playing a media file
+ * @return {void}
  */
 function stopMedia() {
     setPlaylistCurrentItem(false);
@@ -684,7 +810,8 @@ function stopMedia() {
         clearInterval(timer);
     }
 
-    if (null != currentPlaylist && 0 < currentPlaylist.length && currentPlaylistItem < (currentPlaylist.length - 1)) {
+    if (null != currentPlaylist && 0 < currentPlaylist.length && currentPlaylistItem < (
+            currentPlaylist.length - 1)) {
         setPlaylistCurrentItem(false);
         var nextUrl = currentPlaylist[currentPlaylistItem + 1];
         loadMediaPwnt(nextUrl, guessMimeTypeStr(nextUrl));
@@ -692,9 +819,10 @@ function stopMedia() {
 }
 
 /**
- * set media volume
+ * Helper function to set the media volume
  * @param {Number} level A number for volume level
  * @param {Boolean} mute A true/false for mute/unmute
+ * @return {void}
  */
 function setMediaVolume(level, mute) {
     if (!currentMedia) {
@@ -717,9 +845,10 @@ function setMediaVolume(level, mute) {
 }
 
 /**
- * set receiver volume
+ * Helper function to set the receiver volume
  * @param {Number} level A number for volume level
  * @param {Boolean} mute A true/false for mute/unmute
+ * @return {void}
  */
 function setReceiverVolume(level, mute) {
     if (!session) {
@@ -751,8 +880,9 @@ function setReceiverVolume(level, mute) {
 }
 
 /**
- * mute media
- * @param {DOM Object} cb A checkbox element
+ * Helper function to mute current playing media
+ * @param {Object} cb A checkbox DOM element
+ * @return {void}
  */
 function muteMedia(cb) {
     if (cb.checked == true) {
@@ -766,8 +896,9 @@ function muteMedia(cb) {
 }
 
 /**
- * seek media position
+ * Helper function to seek media position
  * @param {Number} pos A number to indicate percent
+ * @return {void}
  */
 function seekMedia(pos) {
     console.log('Seeking ' + currentMedia.sessionId + ':' +
@@ -787,7 +918,7 @@ function seekMedia(pos) {
 /**
  * callback on success for media commands
  * @param {string} info A message string
- * @param {Object} e A non-null media object
+ * @return {void}
  */
 function onSeekSuccess(info) {
     console.log(info);
@@ -800,7 +931,7 @@ function onSeekSuccess(info) {
 /**
  * callback on success for media commands
  * @param {string} info A message string
- * @param {Object} e A non-null media object
+ * @return {void}
  */
 function mediaCommandSuccessCallback(info) {
     console.log(info);
